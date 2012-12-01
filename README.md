@@ -17,6 +17,10 @@ To get an example running locally, follow these steps:-
 - upload the Arduino sketch to the board and open serial monitor in order to debug
 - LED will illuminate if everything has worked as it should
 
+## Lolcommits
+
+Keeps you committing at 2:45AM, [get 'er done](https://github.com/mroth/lolcommits).
+
 ## Ideas
 
 ### Physical check-in device
