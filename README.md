@@ -14,10 +14,10 @@ To get an example running locally, follow these steps:-
 - open network in system preferences and make a note of your IP from the Wi-Fi section
 - edit credentials.h in `arduino/main` to reflect your Wi-Fi networks ssid and passphrase
 - edit the main.pde Arduino sketch so that the ip which the PubSubClient will be connecting to is yours (see above)
-- upload Arduino sketch to the board, open serial monitor in order to debug
+- upload the Arduino sketch to the board and open serial monitor in order to debug
 - LED will illuminate if everything has worked as it should
 
 ## Ideas
 
-### Physical check-in device:
-- RFID on back of phone; check-in when you get home, it uses twilio node library to text your housemates and let them know.
+### Physical check-in device
+- RFID on back of phone; check-in when you get home, it uses [twilio](http://twilio.com) [node library](https://github.com/sjwalter/node-twilio) to text your housemates and let them know.
