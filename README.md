@@ -19,7 +19,9 @@ To get an example running locally, follow these steps:-
 
 ## Lolcommits
 
-Keeps you committing at 2:45AM, [get 'er done](https://github.com/mroth/lolcommits) — []().
+Keeps you committing at 2:45AM, [get 'er done](https://github.com/mroth/lolcommits).
+
+![testing](http://cl.ly/LHku)
 
 ## Ideas
 
