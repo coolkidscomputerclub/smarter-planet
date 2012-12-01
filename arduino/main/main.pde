@@ -28,9 +28,7 @@ void callback (char *topic, uint8_t *data, int dataLen) {
 
         }
 
-        Serial.print("Payload received: ");
-
-        Serial.print("{topic: " + String(topic) + ", payload: " + payload + "}");
+        Serial.println("Payload received: {topic: " + String(topic) + ", payload: " + payload + "}");
 
         switchLED(payload, false);
 
@@ -42,11 +40,13 @@ void setup () {
 
     Serial.begin(115200);
 
+    pinMode(ledPin, OUTPUT);
+
+    digitalWrite(ledPin, ledStatus);
+
     setupWiFly();
 
     setupPubSub();
-
-    pinMode(ledPin, OUTPUT);
 
 }
 
@@ -82,9 +82,7 @@ void setupWiFly () {
 
     WiFly.begin();
 
-    Serial.print("WiFly connecting: ");
-
-    Serial.println("{ssid: " + String(ssid) + ", passphrase: " + String(passphrase) + "}");
+    Serial.println("WiFly connecting: {ssid: " + String(ssid) + ", passphrase: " + String(passphrase) + "}");
 
     if (WiFly.join(ssid, passphrase)) {
 
