@@ -1,4 +1,23 @@
-smarter-planet
-==============
+# Smarter Planet Project
 
-Everyware smarter planet project.
+## Introduction
+
+In the example in the lab, we used the RSMB (Really Small Message Broker) as an MQTT server, in this instance we're using the [mqttjs node library](https://github.com/adamvr/MQTT.js/) to provide that functionality. This server (rather silently) handles all of the message delivery (i.e. publishing and subscribing).
+
+To get an example running locally, follow these steps:-
+
+- node.js
+-- navigate to the repository directory
+-- run `node node/broker.js`
+
+- Arduino
+-- open network in system preferences and make a note of your IP from the Wi-Fi section
+-- edit credentials.h in `arduino/main` to reflect your Wi-Fi networks ssid and passphrase
+-- edit the main.pde Arduino sketch so that the ip which the PubSubClient will be connecting to is yours (see above)
+-- upload Arduino sketch to the board, open serial monitor in order to debug
+-- LED will illuminate if everything has worked as it should
+
+## Ideas
+
+- Physical check-in device:
+-- RFID on back of phone; check-in when you get home, it uses twilio node library to text your housemates and let them know.
