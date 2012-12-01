@@ -19,7 +19,7 @@ To get an example running locally, follow these steps:-
 
 ## Lolcommits
 
-Keeps you committing at 2:45AM, [get 'er done](https://github.com/mroth/lolcommits).
+Keeps you committing at 2:45AM, [get 'er done](https://github.com/mroth/lolcommits) — I'm doing it post-push and saving images to `repo/.lolcommits`; join in the fun:-
 
 ![testing](http://f.cl.ly/items/2u413w13372i0a123i0Y/8a340645db9.jpg)
 
