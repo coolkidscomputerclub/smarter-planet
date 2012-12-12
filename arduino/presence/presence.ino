@@ -4,78 +4,34 @@
 #include <PubSubClient.h>
 #include <SoftwareSerial.h>
 
-#define soundPin A0
-#define ledPin 2
-#define soundThreshold 650
-#define DELAY 500
-
-//RFID 
+// RFID Reader
 
 #define rxPin 8
 #define txPin 9
 #define readerPin 7
-
 #define startByte 0x0A
 #define endByte 0x0D
-
 #define tagLength 12
-
 #define delayInterval 1000
-
-WiFlyClient wiFlyclient;
-
-int val;
-int ledStatus = LOW;
-
-byte ip[] = {192, 168, 0, 2};
-PubSubClient client(ip, 8080, callback, wiFlyclient);
-char* testTopic = "test";
-
-//RFID
-
 SoftwareSerial RFID = SoftwareSerial(rxPin, txPin);
-
 int readerState = HIGH;
-
 bool reading = true;
-
 unsigned long previousMillis;
-
 String currentTag;
 
-// void callback (char *topic, uint8_t *data, int dataLen) {
-
-//     if (String(topic) == testTopic) {
-
-//         String payload;
-
-//         for (int i = 0; i < dataLen; i++) {
-
-//             payload.concat(data[i]);
-
-//         }
-
-//         Serial.println("Payload received: {topic: " + String(topic) + ", payload: " + payload + "}");
-
-//         switchLED(payload, false);
-
-//     }
-
-// }
+// WiFly and MQTT
+byte ip[] = {192, 168, 0, 2};
+WiFlyClient wiFlyclient;
+PubSubClient client(ip, 8080, callback, wiFlyclient);
+char* testTopic = "test";
 
 void setup () {
 
     Serial.begin(115200);
 
-    pinMode(ledPin, OUTPUT);
-
-    digitalWrite(ledPin, ledStatus);
-
     setupWiFly();
 
     setupPubSub();
-
-    //RFIDReader
 
     RFID.begin(2400);
 
@@ -86,8 +42,6 @@ void setup () {
 void loop () {
 
     client.loop();
-
-    // RFIDReader
 
     if (reading == true) {
 
@@ -140,36 +94,6 @@ void setupPubSub () {
     } else {
 
         Serial.println("PubSub connection failed.");
-
-    }
-
-}
-
-void switchLED (String state, bool broadcast) {
-
-    if (state == "on" && ledStatus == LOW) {
-
-        ledStatus = HIGH;
-
-        digitalWrite(ledPin, ledStatus);
-
-    } else if (state == "off" && ledStatus == HIGH) {
-
-        ledStatus = LOW;
-
-        digitalWrite(ledPin, ledStatus);
-
-    }
-
-    if (broadcast) {
-
-        char message[state.length()];
-
-        state.toCharArray(message, state.length());
-
-        Serial.println("Status sent: " + state);
-
-        client.publish(testTopic, message);
 
     }
 
@@ -296,15 +220,19 @@ void turnReaderOn () {
 }
 
 void callback(char* topic, byte* payload, unsigned int length) {
-  // In order to republish this payload, a copy must be made
-  // as the orignal payload buffer will be overwritten whilst
-  // constructing the PUBLISH packet.
-  
-  // Allocate the correct amount of memory for the payload copy
-  // byte* p = (byte*)malloc(length);
-  // Copy the payload to the new buffer
-  // memcpy(p,payload,length);
-  // client.publish("outTopic", p, length);
-  // Free the memory
-  // free(p);
+
+    if (String(topic) == testTopic) {
+
+        String payloadString;
+
+        for (int i = 0; i < length; i++) {
+
+            payloadString.concat(payload[i]);
+
+        }
+
+        Serial.println("Payload received: {topic: " + String(topic) + ", payload: " + payloadString + "}");
+
+    }
+
 }

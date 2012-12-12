@@ -1,7 +1,7 @@
 var mqtt = require('mqttjs'),
     port = 8080,
     host = "127.0.0.1",
-    topic = "led/status",
+    topic = "test",
     mqttServer,
     mqttClient;
 
@@ -35,7 +35,7 @@ mqttServer = mqtt.createServer(function (client) {
 
                 topic: topic,
 
-                payload: "on"
+                payload: "HELLO"
 
             });
 
@@ -124,25 +124,7 @@ mqttClient = mqtt.createClient(port, host, function (err, client) {
 
         if (packet.returnCode === 0) {
 
-            client.publish({
-
-                topic: topic,
-
-                payload: "off"
-
-            });
-
-            setTimeout(function () {
-
-                client.publish({
-
-                    topic: topic,
-
-                    payload: "on"
-
-                });
-
-            }, 2000);
+            // connected
 
         } else {
 
