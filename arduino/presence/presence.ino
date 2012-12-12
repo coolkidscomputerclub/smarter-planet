@@ -5,7 +5,6 @@
 #include <SoftwareSerial.h>
 
 // RFID Reader
-
 #define rxPin 8
 #define txPin 9
 #define readerPin 7
@@ -21,8 +20,8 @@ String currentTag;
 
 // WiFly and MQTT
 byte ip[] = {192, 168, 0, 2};
-WiFlyClient wiFlyclient;
-PubSubClient client(ip, 8080, callback, wiFlyclient);
+WiFlyClient wiFlyClient;
+PubSubClient client(ip, 8080, callback, wiFlyClient);
 char* testTopic = "test";
 
 void setup () {
@@ -141,7 +140,7 @@ void readTag () {
 
     Serial.println("reading tag");
 
-    String tag = "";
+    char tag[10] = "";
 
     for (int bytesRead = 0; bytesRead < tagLength; bytesRead++) {
 
@@ -167,7 +166,7 @@ void readTag () {
 
         } else {
 
-            tag += incomingByte;
+            tag[bytesRead] = incomingByte;
 
         }
 
@@ -175,13 +174,15 @@ void readTag () {
 
 }
 
-void processTag (String tag) {
+void processTag (char tag[]) {
 
-    currentTag = tag;
+    currentTag = String(tag);
 
     Serial.print("Tag has been read: ");
 
     Serial.println(currentTag);
+
+    client.publish(testTopic, tag);
 
     RFID.flush();
 
