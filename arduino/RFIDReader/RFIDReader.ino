@@ -23,138 +23,150 @@ String currentTag;
 
 void setup () {
 
-  Serial.begin(2400);
+	Serial.begin(2400);
 
-  RFID.begin(2400);
+	RFID.begin(2400);
 
-  pinMode(readerPin, OUTPUT);
+	pinMode(readerPin, OUTPUT);
 
 }
 
 void loop () {
 
-  if (reading == true) {
+	if (reading == true) {
 
-    startReading();
+		startReading();
 
-    if (RFID.available() == 12) {
+		if (RFID.available() == 12) {
 
-      stopReading();
+			stopReading();
 
-      readTag();
+			readTag();
 
-    }
+		}
 
-  } else {
+	} else {
 
-    checkDelay();
+		checkDelay();
 
-  }
+	}
 
 }
 
 void startReading () {
 
-  turnReaderOn();
+	turnReaderOn();
 
 }
 
 void stopReading () {
 
-  reading = false;
+	reading = false;
 
-  turnReaderOff();
+	Serial.println("reading false");
 
-  startDelay();
+	turnReaderOff();
+
+	startDelay();
 
 }
 
 void startDelay () {
 
-  previousMillis = millis();
+	previousMillis = millis();
 
 }
 
 void checkDelay () {
 
-  if (millis() - previousMillis > delayInterval) {
+	if (millis() - previousMillis > delayInterval) {
 
-    reading = true;
+		reading = true;
 
-  }
+		Serial.println("reading is true");
+
+	}
 
 }
 
 void readTag () {
 
-  String tag = "";
+	Serial.println("reading tag");
 
-  for (int bytesRead = 0; bytesRead < tagLength; bytesRead++) {
+	String tag = "";
 
-    int incomingByte = RFID.read();
+	for (int bytesRead = 0; bytesRead < tagLength; bytesRead++) {
 
-    if (incomingByte == startByte) {
+		Serial.println("running loop");
 
-      Serial.print("startByte detected: ");
+		int incomingByte = RFID.read();
 
-      Serial.println(incomingByte, DEC);
+		Serial.println(incomingByte);
 
-    } else if (incomingByte == endByte) {
+		if (incomingByte == startByte) {
 
-      Serial.print("endByte detected: ");
+			Serial.print("startByte detected: ");
 
-      Serial.println(incomingByte, DEC);
+			Serial.println(incomingByte, DEC);
 
-      processTag(tag);
+		} else if (incomingByte == endByte) {
 
-    } else {
+			Serial.print("endByte detected: ");
 
-      tag = tag + incomingByte;
+			Serial.println(incomingByte, DEC);
 
-    }
+			processTag(tag);
 
-  }
+		} else {
+
+			tag += incomingByte;
+
+		}
+
+	}
 
 }
 
 void processTag (String tag) {
 
-  currentTag = tag;
+	currentTag = tag;
 
-  Serial.print("Tag has been read: ");
+	Serial.print("Tag has been read: ");
 
-  Serial.println(currentTag);
+	Serial.println(currentTag);
+
+	RFID.flush();
 
 }
 
 void turnReaderOff () {
 
-  if (readerState == LOW) {
+	if (readerState == LOW) {
 
-    digitalWrite(readerPin, HIGH);
+		digitalWrite(readerPin, HIGH);
 
-    readerState = HIGH;
+		readerState = HIGH;
 
-    Serial.print("Turned reader off: ");
+		Serial.print("Turned reader off: ");
 
-    Serial.println(readerState);
+		Serial.println(readerState);
 
-  }
+	}
 
 }
 
 void turnReaderOn () {
 
-  if (readerState == HIGH) {
+	if (readerState == HIGH) {
 
-    digitalWrite(readerPin, LOW);
+		digitalWrite(readerPin, LOW);
 
-    readerState = LOW;
+		readerState = LOW;
 
-    Serial.print("Turned reader on: ");
+		Serial.print("Turned reader on: ");
 
-    Serial.println(readerState);
+		Serial.println(readerState);
 
-  }
+	}
 
 }
