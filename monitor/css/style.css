@@ -1,9 +1,12 @@
+html {
+  overflow: hidden; }
+
 body {
   color: #111;
   font-size: 1em;
   font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
   line-height: 1.5em;
-  background-color: #fff;
+  background: white url(../images/bg.png) repeat left top;
   padding: 0;
   margin: 0; }
 
@@ -16,7 +19,15 @@ a {
   a:hover, a:focus {
     color: fuchsia; }
 
+#mainCanvas {
+  border: 1px solid magenta;
+  margin: 0 auto;
+  display: block;
+  width: 1024px;
+  height: 768px; }
+
 footer {
+  color: #677C9A;
   width: 100%;
   position: absolute;
   bottom: 0;
