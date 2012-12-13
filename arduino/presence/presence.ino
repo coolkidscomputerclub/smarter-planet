@@ -5,9 +5,9 @@
 #include <SoftwareSerial.h>
 
 // RFID Reader
-#define rxPin 8
-#define txPin 9
-#define readerPin 7
+#define rxPin 3
+#define txPin 4
+#define readerPin 2
 #define startByte 0x0A
 #define endByte 0x0D
 #define tagLength 12
@@ -42,23 +42,23 @@ void loop () {
 
     client.loop();
 
-    if (reading == true) {
+    // if (reading == true) {
 
-        startReading();
+    //     startReading();
 
-        if (RFID.available() == 12) {
+    //     if (RFID.available() == 12) {
 
-            stopReading();
+    //         stopReading();
 
-            readTag();
+    //         readTag();
 
-        }
+    //     }
 
-    } else {
+    // } else {
 
-        checkDelay();
+    //     checkDelay();
 
-    }
+    // }
 
 }
 
@@ -89,6 +89,8 @@ void setupPubSub () {
         Serial.println("PubSub connected.");
 
         client.subscribe(testTopic);
+
+        client.publish(testTopic, "hello this is the arduino");
 
     } else {
 
@@ -224,16 +226,19 @@ void callback(char* topic, byte* payload, unsigned int length) {
 
     if (String(topic) == testTopic) {
 
-        String payloadString;
+        char payloadChar[] = "";
+
+        Serial.print("length: ");
+        Serial.println(length);
 
         for (int i = 0; i < length; i++) {
 
-            payloadString.concat(payload[i]);
+            payloadChar[i] = (char) payload[i];
 
         }
 
-        Serial.println("Payload received: {topic: " + String(topic) + ", payload: " + payloadString + "}");
+        Serial.println("Payload received: {topic: " + String(topic) + ", payload: " + payloadChar + "}");
 
-    }
+    }
 
 }
