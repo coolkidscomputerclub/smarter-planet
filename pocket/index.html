@@ -18,26 +18,17 @@
 		<link rel="apple-touch-icon-precomposed" sizes="72x72" href="touch-icons/apple-touch-icon-72x72.png">
 		<link rel="apple-touch-icon-precomposed" sizes="57x57" href="touch-icons/apple-touch-icon-57x57.png">
 
-		<link rel="stylesheet" href="style/ratchet.css">
+		<link rel="stylesheet" href="style/swipe.css">
 		<link rel="stylesheet" href="style/main.css">
-
-		<!-- Include the compiled Ratchet JS -->
-		<script src="js/lib/ratchet.js"></script>
 
 	</head>
 
 	<body>
 
-		<header class="bar-title">
-			<h1 class="title">Inhabit</h1>
-		</header>
-
 		<div class="content">
 
-			<div class="slider user-select">
-
+			<div id="user-select" class="slider">
 				<ul>
-
 					<li>
 						<img class="avatar" src="img/avatar/ben.jpg" />
 						<span class="slide-text user-name">Ben</span>
@@ -57,11 +48,10 @@
 						<img class="avatar" src="img/avatar/saul.jpg" />
 						<span class="slide-text user-name">Saul</span>
 					</li>
-
 				</ul>
-
 			</div>
 
+			<!--
 			<div class="timeline">
 
 				<ul class="list">
@@ -84,10 +74,26 @@
 				</ul>
 
 			</div>
+			-->
+
+			<script id="family-template" type="text/x-handlebars-template">
+				<ul>
+					<li>
+						{{#each users}}
+							<span class="name">{{name}}</span>
+							<img class="avatar" src="{{avatarURL}}" />
+						{{/each}}
+					</li>
+				</ul>
+			</script>
+
+			<div id="family"></div>
 
 		</div>
 
 		<script src="js/lib/jquery-min.js"></script>
+		<script src="js/lib/handlebars.js"></script>
+		<script src="js/lib/swipe.js"></script>
 		<script src="js/main.js"></script>
 
 	</body>

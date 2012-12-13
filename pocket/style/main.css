@@ -19,11 +19,11 @@
 /********************\
  $ USER SELECT
 \********************/
-.user-select {
+.slider {
   background: white;
   height: 120px;
-  padding: 20px; }
-  .user-select ul li {
+  padding: 20px 0; }
+  .slider ul li {
     text-align: center; }
 
 .avatar {
