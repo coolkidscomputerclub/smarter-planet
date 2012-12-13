@@ -1,0 +1,76 @@
+/********************\
+ $ RESET
+\********************/
+* {
+  box-sizing: border-box; }
+
+/********************\
+ $ MAIN CONTENT
+\********************/
+.content {
+  background: white; }
+
+/********************\
+ $ USER SELECT
+\********************/
+.slider {
+  background: #363636;
+  padding: 20px 0; }
+  .slider ul li {
+    text-align: center; }
+
+.user {
+  height: 90px;
+  width: 90px;
+  border-radius: 45px;
+  margin: 0 auto; }
+  .user .avatar {
+    height: 80px;
+    width: 80px;
+    border-radius: 40px; }
+
+.present {
+  border: 5px solid rgba(6, 219, 180, 0.4); }
+
+.absent {
+  border: 5px solid rgba(220, 68, 68, 0.4); }
+
+.user-name {
+  display: block;
+  text-transform: uppercase;
+  color: #ebebeb; }
+
+/********************\
+ $ TIMELINE
+\********************/
+.event {
+  padding: 30px;
+  background-color: white; }
+  .event .messsage {
+    color: #363636; }
+  .event .timestamp {
+    color: #c5c5c5;
+    font-size: 12px; }
+  .event:nth-of-type(odd) {
+    background-color: #fafafa; }
+
+.bubble {
+  content: "";
+  position: absolute;
+  top: 25%;
+  display: inline-block;
+  height: 25px;
+  width: 25px;
+  border-radius: 25px;
+  margin: 0 20px;
+  z-index: 10;
+  border: 3px solid white; }
+
+.presence {
+  color: #eb9b65; }
+
+.environment {
+  color: #66cc9e; }
+
+.social {
+  color: #2eaade; }

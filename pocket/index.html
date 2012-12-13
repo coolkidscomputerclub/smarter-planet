@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+
+		<meta charset="utf-8">
+
+		<title>Inhabit</title>
+
+		<!-- Sets initial viewport load and disables zooming  -->
+		<meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
+
+		<!-- Makes your prototype chrome-less once bookmarked to your phone's home screen -->
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+		<link rel="apple-touch-icon-precomposed" sizes="114x114" href="touch-icons/apple-touch-icon-114x114.png">
+		<link rel="apple-touch-icon-precomposed" sizes="72x72" href="touch-icons/apple-touch-icon-72x72.png">
+		<link rel="apple-touch-icon-precomposed" sizes="57x57" href="touch-icons/apple-touch-icon-57x57.png">
+
+		<link rel="stylesheet" href="style/swipe.css">
+		<link rel="stylesheet" href="style/main.css">
+
+	</head>
+
+	<body>
+
+		<div class="content">
+
+			<div id="user-select" class="slider"></div>
+
+			<div id="timeline">
+				<ul></ul>
+			</div>
+
+		</div>
+
+		<!--TEMPLATES-->
+		<script id="family-template" type="text/x-handlebars-template">
+			<ul>
+				{{#each users}}
+					<li class="user">
+						{{#if presence}}<div class="user present">{{else}}<div class="user absent">{{/if}}
+							<img class="avatar" src="{{avatar}}" />
+						</div>
+					</li>
+				{{/each}}
+			</ul>
+		</script>
+
+		<script id="presence-event-template" type="text/x-handlebars-template">
+			<li class="event">
+				<p class="message">
+					{{#if user.presence}}
+						<p>{{user.name}} just arrived home!</p>
+					{{else}}
+						<p>{{user.name}} just left!</p>
+					{{/if}}
+				</p>
+				<time class="timestamp">{{time}}</time>
+			</li>
+		</script>
+
+		<!--CONFIG-->
+		<script>
+			var config = {
+
+				// Saul's socket
+				socketServer: '192.168.0.2'
+
+			};
+		</script>
+
+		<script src="js/lib/jquery-min.js"></script>
+		<script src="js/lib/socket.io.min.js"></script>
+		<script src="js/lib/handlebars.js"></script>
+		<script src="js/lib/swipe.js"></script>
+		<script src="js/main.js"></script>
+	</body>
+
+</html>
