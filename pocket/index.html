@@ -29,6 +29,10 @@
 
 			<div id="user-select" class="slider"></div>
 
+			<div id="timeline">
+				<ul id="events"></ul>
+			</div>
+
 		</div>
 
 		<!--TEMPLATES-->
@@ -44,7 +48,18 @@
 			</ul>
 		</script>
 
+		<!--CONFIG-->
+		<script>
+			var config = {
+
+				// Saul's socket
+				socketServer: '192.168.0.2'
+
+			};
+		</script>
+
 		<script src="js/lib/jquery-min.js"></script>
+		<script src="js/lib/socket.io.min.js"></script>
 		<script src="js/lib/handlebars.js"></script>
 		<script src="js/lib/swipe.js"></script>
 		<script src="js/main.js"></script>

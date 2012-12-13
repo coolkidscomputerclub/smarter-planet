@@ -9,14 +9,6 @@
 }
 
 /********************\
- $ DAMMIT, RATCHET
-\********************/
-
-.list li {
-	border: none;
-}
-
-/********************\
  $ MAIN CONTENT
 \********************/
 
@@ -67,33 +59,7 @@
 \********************/
 
 .event {
-	position: relative;
-	background: $grey-lightest;
-
-	.decor {
-		display: inline-block;
-		position: absolute;
-		left: 43px;
-		top: 0;
-		height: 100%;
-		width: 3px;
-		background: $grey-light;
-		z-index: 0;
-		opacity: .5;
-	}
-
-	.message {
-		display: inline-block;
-		color: $grey-dark;
-		margin: 0 70px;
-	}
-
-	&:last-of-type {
-		.decor {
-			height: 50%;
-		}
-	}
-
+	padding: 30px;
 }
 
 // Base bubble class
@@ -114,34 +80,16 @@
 // Event types
 
 .presence {
-
-	&:before {
-		@extend .bubble;
-		background: $presence;
-	}
-
+	color: $presence;
 }
 
 .environment {
-
-	.message {
-		opacity: .4;
-	}
-
-	&:before {
-		@extend .bubble;
-		background: $environment;
-	}
+	color: $environment;
 
 }
 
 .social {
-
-	&:before {
-		@extend .bubble;
-		background: $social;
-	}
-
+	color: $social;
 }
 
 

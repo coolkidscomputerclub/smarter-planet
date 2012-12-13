@@ -5,12 +5,6 @@
   box-sizing: border-box; }
 
 /********************\
- $ DAMMIT, RATCHET
-\********************/
-.list li {
-  border: none; }
-
-/********************\
  $ MAIN CONTENT
 \********************/
 .content {
@@ -45,26 +39,9 @@
  $ TIMELINE
 \********************/
 .event {
-  position: relative;
-  background: #fafafa; }
-  .event .decor {
-    display: inline-block;
-    position: absolute;
-    left: 43px;
-    top: 0;
-    height: 100%;
-    width: 3px;
-    background: #ebebeb;
-    z-index: 0;
-    opacity: .5; }
-  .event .message {
-    display: inline-block;
-    color: #363636;
-    margin: 0 70px; }
-  .event:last-of-type .decor {
-    height: 50%; }
+  padding: 30px; }
 
-.bubble, .presence:before, .environment:before, .social:before {
+.bubble {
   content: "";
   position: absolute;
   top: 25%;
@@ -76,13 +53,11 @@
   z-index: 10;
   border: 3px solid white; }
 
-.presence:before {
-  background: #eb9b65; }
+.presence {
+  color: #eb9b65; }
 
-.environment .message {
-  opacity: .4; }
-.environment:before {
-  background: #66cc9e; }
+.environment {
+  color: #66cc9e; }
 
-.social:before {
-  background: #2eaade; }
+.social {
+  color: #2eaade; }
