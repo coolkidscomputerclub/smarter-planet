@@ -34,11 +34,10 @@
 }
 
 .user {
-	display: inline-block;
 	height: 90px;
 	width: 90px;
 	border-radius: 45px;
-	border: 5px solid transparentize($glow, .5);
+	margin: 0 auto;
 
 	.avatar {
 		height: 80px;
@@ -46,6 +45,14 @@
 		border-radius: 40px;
 	}
 
+}
+
+.present {
+	border: 5px solid transparentize($present, .6);
+}
+
+.absent {
+	border: 5px solid transparentize($absent, .6);
 }
 
 .user-name {

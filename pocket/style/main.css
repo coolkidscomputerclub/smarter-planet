@@ -20,15 +20,20 @@
     text-align: center; }
 
 .user {
-  display: inline-block;
   height: 90px;
   width: 90px;
   border-radius: 45px;
-  border: 5px solid rgba(6, 219, 180, 0.5); }
+  margin: 0 auto; }
   .user .avatar {
     height: 80px;
     width: 80px;
     border-radius: 40px; }
+
+.present {
+  border: 5px solid rgba(6, 219, 180, 0.4); }
+
+.absent {
+  border: 5px solid rgba(220, 68, 68, 0.4); }
 
 .user-name {
   display: block;

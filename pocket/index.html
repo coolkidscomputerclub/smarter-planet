@@ -39,9 +39,9 @@
 		<script id="family-template" type="text/x-handlebars-template">
 			<ul>
 				{{#each users}}
-					<li>
-						<div class="user">
-							<img class="avatar" src="{{avatarURL}}" />
+					<li class="user">
+						{{#if presence}}<div class="user present">{{else}}<div class="user absent">{{/if}}
+							<img class="avatar" src="{{avatar}}" />
 						</div>
 					</li>
 				{{/each}}
@@ -74,7 +74,6 @@
 		<script src="js/lib/jquery-min.js"></script>
 		<script src="js/lib/socket.io.min.js"></script>
 		<script src="js/lib/handlebars.js"></script>
-		<script src="js/lib/jquery-timeago.js"></script>
 		<script src="js/lib/swipe.js"></script>
 		<script src="js/main.js"></script>
 	</body>
