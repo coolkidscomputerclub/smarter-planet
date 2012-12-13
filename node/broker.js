@@ -1,10 +1,122 @@
-var mqtt = require("mqttjs"),
+var MongoClient = require("mongodb").MongoClient,
+    mqtt = require("mqttjs"),
     port = 1883,
     host = "127.0.0.1",
-    topic = "test",
+    topic = "presence",
     mqttServer,
     mqttClient,
     io = require("socket.io").listen(8080);
+
+var userCollection,
+    reset = false,
+    users = [{
+        name: "Saul",
+        presence: false,
+        id: "0800E3CE07"
+    }, {
+        name: "Florian",
+        presence: false,
+        id: "0800DE1994"
+    }, {
+        name: "Ben",
+        presence: false,
+        id: "0800DE1B47"
+    }, {
+        name: "James",
+        presence: false,
+        id: "0800E3CA33"
+    }];
+
+// Connect to the db
+MongoClient.connect("mongodb://localhost:27017/inhabit", function(error, db) {
+
+    if(!error) {
+
+        console.log("Connected.");
+
+        var thisUsers;
+
+    } else {
+
+        console.log("Not connected.");
+
+        return false;
+
+    }
+
+    // create the collection users if it doesn't already exist
+    userCollection = db.collection('users');
+
+    // check if there's any users in the users collection
+    userCollection.find().toArray(function (error, items) {
+
+        if (error === null) {
+
+            thisUsers = items;
+
+            console.log("Getting users in users collection: ", items);
+
+            // if users collection is empty, populate it
+            if (thisUsers.length === 0 || reset === true) {
+
+                // remove all users from users collection
+                userCollection.remove(function (error, result) {
+
+                    if (error === null) {
+
+                        console.log("Users collection emptied: ", result);
+
+                    } else {
+
+                        console.log(error);
+
+                    }
+
+                });
+
+                // insert users into the users collection
+                userCollection.insert(users, {safe: true}, function(error, result) {
+
+                    if (error === null) {
+
+                        console.log("Users added to collection: ", result);
+
+                    } else {
+
+                        console.log("Users not added to collection: ", error);
+
+                    }
+
+                });
+
+                // query users collection for all entries
+                userCollection.find().toArray(function (error, items) {
+
+                    if (error === null) {
+
+                        thisUsers = items;
+
+                        console.log("Getting users in users collection, post addition: ", items);
+
+                    } else {
+
+                        console.log(error);
+
+                    }
+
+                });
+
+            }
+
+        } else {
+
+            console.log(error);
+
+        }
+
+    });
+
+});
 
 mqttServer = mqtt.createServer(function (client) {
 
@@ -50,7 +162,7 @@ mqttServer = mqtt.createServer(function (client) {
         for (var k in self.clients) {
 
             // prevent messages from being sent to the originator
-            if (k !== client.id) {
+            // if (k !== client.id) {
 
                 self.clients[k].publish({
 
@@ -60,7 +172,7 @@ mqttServer = mqtt.createServer(function (client) {
 
                 });
 
-            }
+            // }
 
         }
 
@@ -139,13 +251,46 @@ mqttClient = mqtt.createClient(port, host, function (err, client) {
 
         console.log("Payload received: ", packet.topic, packet.payload);
 
-        if (packet.topic === "presence") {
+        if (packet.topic === topic) {
 
-            io.sockets.emit("presence", {
+            userCollection.find({id: packet.payload}).toArray(function (error, items) {
 
-                user: "saul",
+                if (error === null) {
 
-                state: 1
+                    console.log("Find items with id of payload: ", items);
+
+                    if (items.length > 0) {
+
+                        var user = items[0];
+
+                        user.presence = !user.presence;
+
+                        userCollection.update({name: user.name}, {$set: {presence: user.presence}}, {safe: true}, function(error, result) {
+
+                            if (error === null) {
+
+                                // tell connected clients that a users presence has changed
+                                io.sockets.emit("presence", {
+
+                                    user: user
+
+                                });
+
+                            } else {
+
+                                console.log(error);
+
+                            }
+
+                        });
+
+                    }
+
+                } else {
+
+                    console.log(error);
+
+                }
 
             });
 
@@ -168,6 +313,18 @@ mqttClient = mqtt.createClient(port, host, function (err, client) {
     });
 
 });
+
+setTimeout(function () {
+
+    mqttClient.publish({
+
+        topic: topic,
+
+        payload: "0800E3CA33"
+
+    });
+
+}, 1000);
 
 io.sockets.on("connection", function (socket) {
 
