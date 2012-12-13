@@ -139,13 +139,17 @@ mqttClient = mqtt.createClient(port, host, function (err, client) {
 
         console.log("Payload received: ", packet.topic, packet.payload);
 
-        io.sockets.emit("presence", {
+        if (packet.topic === "presence") {
 
-            user: "saul",
+            io.sockets.emit("presence", {
 
-            state: 1
+                user: "saul",
 
-        });
+                state: 1
+
+            });
+
+        }
 
     });
 

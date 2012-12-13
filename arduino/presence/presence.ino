@@ -21,7 +21,7 @@ unsigned long previousMillis;
 byte ip[] = {192, 168, 0, 2};
 WiFlyClient wiFlyClient;
 PubSubClient client(ip, 1883, callback, wiFlyClient);
-char* testTopic = "test";
+char* presenceTopic = "presence";
 
 void setup () {
 
@@ -88,9 +88,9 @@ void setupPubSub () {
 
         Serial.println("PubSub connected.");
 
-        client.subscribe(testTopic);
+        client.subscribe(presenceTopic);
 
-        client.publish(testTopic, "hello this is the arduino");
+        client.publish(presenceTopic, "hello this is the arduino");
 
     } else {
 
@@ -142,6 +142,14 @@ void readTag () {
 
         char incomingByte = RFID.read();
 
+        if (bytesRead == 0) {
+
+            Serial.print('startByte: ');
+
+            Serial.println(incomingByte);
+
+        }
+
         if (bytesRead == 0 && incomingByte != startByte) {
 
             // shit's fucked up
@@ -170,9 +178,9 @@ void processTag (char tag[]) {
 
     tag[10] = '\0';
 
-    Serial.println("Payload sent: {topic: " + String(testTopic) + ", payload: " + tag + "}");
+    Serial.println("Payload sent: {topic: " + String(presenceTopic) + ", payload: " + tag + "}");
 
-    client.publish(testTopic, tag);
+    client.publish(presenceTopic, tag);
 
     RFID.flush();
 
@@ -212,7 +220,7 @@ void turnReaderOn () {
 
 void callback (char* topic, byte* payload, unsigned int length) {
 
-    if (String(topic) == testTopic) {
+    if (String(topic) == presenceTopic) {
 
         char payloadChar[length+1];
 
