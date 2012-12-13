@@ -8,7 +8,7 @@
  $ MAIN CONTENT
 \********************/
 .content {
-  background: #fafafa; }
+  background: white; }
 
 /********************\
  $ USER SELECT
@@ -39,7 +39,15 @@
  $ TIMELINE
 \********************/
 .event {
-  padding: 30px; }
+  padding: 30px;
+  background-color: white; }
+  .event .messsage {
+    color: #363636; }
+  .event .timestamp {
+    color: #c5c5c5;
+    font-size: 12px; }
+  .event:nth-of-type(odd) {
+    background-color: #fafafa; }
 
 .bubble {
   content: "";

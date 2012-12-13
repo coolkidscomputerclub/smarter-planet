@@ -30,7 +30,7 @@
 			<div id="user-select" class="slider"></div>
 
 			<div id="timeline">
-				<ul id="events"></ul>
+				<ul></ul>
 			</div>
 
 		</div>
@@ -48,6 +48,19 @@
 			</ul>
 		</script>
 
+		<script id="presence-event-template" type="text/x-handlebars-template">
+			<li class="event">
+				<p class="message">
+					{{#if user.presence}}
+						<p>{{user.name}} just arrived home!</p>
+					{{else}}
+						<p>{{user.name}} just left!</p>
+					{{/if}}
+				</p>
+				<time class="timestamp">{{time}}</time>
+			</li>
+		</script>
+
 		<!--CONFIG-->
 		<script>
 			var config = {
@@ -61,6 +74,7 @@
 		<script src="js/lib/jquery-min.js"></script>
 		<script src="js/lib/socket.io.min.js"></script>
 		<script src="js/lib/handlebars.js"></script>
+		<script src="js/lib/jquery-timeago.js"></script>
 		<script src="js/lib/swipe.js"></script>
 		<script src="js/main.js"></script>
 	</body>

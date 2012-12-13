@@ -13,7 +13,6 @@ var main = {
         console.log("Socket connected.");
 
         this.socket = io.connect("//" + config.socketServer + ":8080");
-
         this.bindSocketEvents();
 
     },
@@ -24,25 +23,32 @@ var main = {
 
         console.log("Socket events bound.");
 
-        // general system messages
+        // SYSTEM MESSAGES
         this.socket.on("message", function (data) {
 
             console.log("Message: ", data);
 
         });
 
-        // presence alerts
+        // PRESENCE
         this.socket.on("presence", function (data) {
 
             console.log("Presence: ", data.user.presence);
+            console.log("Timestamp", data);
 
-            console.log("Timestamp", data.time);
+            // Compile Handebars timeline template
+			var timelineSource = $("#presence-event-template").html();
+			var timelineTemplate = Handlebars.compile(timelineSource);
 
-            if (data.user.presence) {
-            	$timeline.append("<li class='event presence'><p class='message'>" + data.user.name + " just got home</p></li>");
-            } else {
-            	$timeline.append("<li class='event 	presence'><p class='message'>" + data.user.name + " just went out</p></li>");
-            }
+			// Append timeline with new presence events
+			$("#timeline ul").append(timelineTemplate(data));
+
+        });
+
+        this.socket.on("users", function (data) {
+
+        	console.log("Users", data);
+
 
         });
 
@@ -52,8 +58,10 @@ var main = {
 
 $(function(){
 
+	// Initialise and run sockets
 	main.init();
 
+	// Test data
 	var userData = {
 		users: [
 			{ id: 0, name: "Ben", 	avatarURL: "img/avatar/ben.jpg" 	},

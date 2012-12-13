@@ -13,7 +13,7 @@
 \********************/
 
 .content {
-	background: $grey-lightest;
+	background: $white;
 }
 
 /********************\
@@ -60,6 +60,20 @@
 
 .event {
 	padding: 30px;
+	background-color: $white;
+
+	.messsage {
+		color: $grey-dark;
+	}
+
+	.timestamp {
+		color: darken($grey-light, 15%);
+		font-size: 12px;
+	}
+
+	&:nth-of-type(odd) {
+		background-color: $grey-lightest;
+	}
 }
 
 // Base bubble class
