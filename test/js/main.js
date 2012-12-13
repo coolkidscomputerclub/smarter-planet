@@ -29,6 +29,13 @@ var main = {
 
         });
 
+        // receive users on connecting
+        this.socket.on("users", function (data) {
+
+            console.log("Users: ", data);
+
+        });
+
         // presence alerts
         this.socket.on("presence", function (data) {
 

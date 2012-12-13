@@ -8,8 +8,9 @@ var MongoClient = require("mongodb").MongoClient,
     io = require("socket.io").listen(8080);
 
 var userCollection,
+    users,
     reset = false,
-    users = [{
+    _users = [{
         name: "Saul",
         presence: false,
         id: "0800E3CE07"
@@ -34,8 +35,6 @@ MongoClient.connect("mongodb://localhost:27017/inhabit", function(error, db) {
 
         console.log("Connected.");
 
-        var thisUsers;
-
     } else {
 
         console.log("Not connected.");
@@ -52,12 +51,12 @@ MongoClient.connect("mongodb://localhost:27017/inhabit", function(error, db) {
 
         if (error === null) {
 
-            thisUsers = items;
+            users = items;
 
-            console.log("Getting users in users collection: ", items);
+            console.log("Users in users collection: ", users);
 
             // if users collection is empty, populate it
-            if (thisUsers.length === 0 || reset === true) {
+            if (users.length === 0 || reset === true) {
 
                 // remove all users from users collection
                 userCollection.remove(function (error, result) {
@@ -94,7 +93,7 @@ MongoClient.connect("mongodb://localhost:27017/inhabit", function(error, db) {
 
                     if (error === null) {
 
-                        thisUsers = items;
+                        users = items;
 
                         console.log("Getting users in users collection, post addition: ", items);
 
@@ -272,7 +271,9 @@ mqttClient = mqtt.createClient(port, host, function (err, client) {
                                 // tell connected clients that a users presence has changed
                                 io.sockets.emit("presence", {
 
-                                    user: user
+                                    user: user,
+
+                                    time: new Date()
 
                                 });
 
@@ -314,7 +315,7 @@ mqttClient = mqtt.createClient(port, host, function (err, client) {
 
 });
 
-setTimeout(function () {
+setInterval(function () {
 
     mqttClient.publish({
 
@@ -324,7 +325,7 @@ setTimeout(function () {
 
     });
 
-}, 1000);
+}, 3000);
 
 io.sockets.on("connection", function (socket) {
 
@@ -332,6 +333,12 @@ io.sockets.on("connection", function (socket) {
     socket.emit("message", {
 
         message: "Congrats, your penis fits in the socket!"
+
+    });
+
+    socket.emit("users", {
+
+        users: users
 
     });
 
