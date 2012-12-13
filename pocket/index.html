@@ -1,63 +1,95 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <title>Inhabit</title>
 
-    <!-- Sets initial viewport load and disables zooming  -->
-    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
+	<head>
 
-    <!-- Makes your prototype chrome-less once bookmarked to your phone's home screen -->
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta charset="utf-8">
 
-    <!-- Set Apple icons for when prototype is saved to home screen -->
-    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="touch-icons/apple-touch-icon-114x114.png">
-    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="touch-icons/apple-touch-icon-72x72.png">
-    <link rel="apple-touch-icon-precomposed" sizes="57x57" href="touch-icons/apple-touch-icon-57x57.png">
+		<title>Inhabit</title>
 
-    <!-- Include the compiled Ratchet CSS -->
-    <link rel="stylesheet" href="ratchet.css">
+		<!-- Sets initial viewport load and disables zooming  -->
+		<meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
 
-    <!-- Include the compiled Ratchet JS -->
-    <script src="ratchet.js"></script>
+		<!-- Makes your prototype chrome-less once bookmarked to your phone's home screen -->
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
 
-  </head>
-  <body>
+		<link rel="apple-touch-icon-precomposed" sizes="114x114" href="touch-icons/apple-touch-icon-114x114.png">
+		<link rel="apple-touch-icon-precomposed" sizes="72x72" href="touch-icons/apple-touch-icon-72x72.png">
+		<link rel="apple-touch-icon-precomposed" sizes="57x57" href="touch-icons/apple-touch-icon-57x57.png">
 
-  <!--
-  <header class="bar-title">
-    <h1 class="title">Inhabit</h1>
-  </header>
-  -->
+		<link rel="stylesheet" href="style/ratchet.css">
+		<link rel="stylesheet" href="style/main.css">
 
-  <div class="content">
+		<!-- Include the compiled Ratchet JS -->
+		<script src="js/lib/ratchet.js"></script>
 
-    <div class="slider">
+	</head>
 
-      <ul>
+	<body>
 
-        <li>
-          <img src="http://placehold.it/320x100&text=YOU" />sdfsdf
-        </li>
+		<header class="bar-title">
+			<h1 class="title">Inhabit</h1>
+		</header>
 
-        <li>
-          <img src="http://placehold.it/320x100&text=FLO" />
-        </li>
+		<div class="content">
 
-        <li>
-          <img src="http://placehold.it/320x100&text=JAMES" />
-        </li>
+			<div class="slider user-select">
 
-        <li>
-          <img src="http://placehold.it/320x100&text=SAUL" />
-        </li>
+				<ul>
 
-      </ul>
+					<li>
+						<img class="avatar" src="img/avatar/ben.jpg" />
+						<span class="slide-text user-name">Ben</span>
+					</li>
 
-    </div>
+					<li>
+						<img class="avatar" src="img/avatar/flo.jpg" />
+						<span class="slide-text user-name">Flo</span>
+					</li>
 
-  </div>
+					<li>
+						<img class="avatar" src="img/avatar/james.jpg" />
+						<span class="slide-text user-name">James</span>
+					</li>
 
-  </body>
+					<li>
+						<img class="avatar" src="img/avatar/saul.jpg" />
+						<span class="slide-text user-name">Saul</span>
+					</li>
+
+				</ul>
+
+			</div>
+
+			<div class="timeline">
+
+				<ul class="list">
+
+					<li class="event presence">
+						<div class="decor"></div>
+						<span class="message">James just went out</span>
+					</li>
+
+					<li class="event environment">
+						<div class="decor"></div>
+						<span class="message">Temp. increased by 2°C</span>
+					</li>
+
+					<li class="event social">
+						<div class="decor"></div>
+						<span class="message">Saul is making tea</span>
+					</li>
+
+				</ul>
+
+			</div>
+
+		</div>
+
+		<script src="js/lib/jquery-min.js"></script>
+		<script src="js/main.js"></script>
+
+	</body>
+
 </html>
