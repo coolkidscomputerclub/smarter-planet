@@ -7,12 +7,55 @@
     function Inhabitant(id, name) {
       this.id = id;
       this.name = name;
+      this.inactiveState = {
+        "stroke-width": 4,
+        stroke: "#ebebeb"
+      };
+      this.activeState = {
+        "stroke-width": 8,
+        stroke: "#9ADEB3"
+      };
     }
 
     Inhabitant.prototype.draw = function(context) {
-      return context.circle(135 + (this.id * 250), 95, 75).attr({
+      this.avatar = context.circle(135 + (this.id * 250), 95, 75).attr({
         fill: "url(images/" + this.name + ".jpg)"
       });
+      if (!this.home) {
+        this.avatar.attr(this.inactiveState);
+      } else {
+        this.avatar.attr(this.activeState);
+      }
+      this.label = context.text(135 + (this.id * 250), 192, this.name).attr({
+        "font-family": "Helvetica Neue",
+        "font-size": 18,
+        fill: "#999"
+      });
+      return this.status = context.text(135 + (this.id * 250), 212, "is out and about").attr({
+        "font-family": "Helvetica Neue",
+        "font-size": 12,
+        fill: "#648D8E"
+      });
+    };
+
+    Inhabitant.prototype.setStatus = function(newStatus) {
+      return this.status.attr({
+        text: newStatus
+      });
+    };
+
+    Inhabitant.prototype.isHome = function() {
+      return this.home;
+    };
+
+    Inhabitant.prototype.updatePresence = function(isIn) {
+      this.home = isIn;
+      if (isIn) {
+        this.avatar.animate(this.activeState, 1000);
+        return this.setStatus("just got in");
+      } else {
+        return this.avatar.animate(this.inactiveState, 1000);
+      }
     };
 
     return Inhabitant;
@@ -20,18 +63,17 @@
   })();
 
   $(function() {
-    var housemates, mate, paper, _i, _len, _results;
+    var housemates, mate, paper, _i, _len;
     $(document).bind('touchmove', function(event) {
       return event.preventDefault();
     });
     paper = Raphael("mainCanvas", 1024, 768);
     housemates = [new Inhabitant(0, "Saul"), new Inhabitant(1, "Ben"), new Inhabitant(2, "James"), new Inhabitant(3, "Flo")];
-    _results = [];
     for (_i = 0, _len = housemates.length; _i < _len; _i++) {
       mate = housemates[_i];
-      _results.push(mate.draw(paper));
+      mate.draw(paper);
     }
-    return _results;
+    return housemates[1].updatePresence(true);
   });
 
 }).call(this);

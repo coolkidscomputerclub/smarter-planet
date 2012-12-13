@@ -26,7 +26,7 @@ a {
 }
 
 #mainCanvas {
-	border: 1px solid magenta;
+	// border: 1px solid rgba(255,0,255,0.2);
 	margin: 0 auto;
 	display: block;
 	width: 1024px;
@@ -43,6 +43,8 @@ footer {
 
 	p {
 		text-align: center;
+		line-height: 1em;
+		span { color: #BACAE1; }
 	}
 
 }

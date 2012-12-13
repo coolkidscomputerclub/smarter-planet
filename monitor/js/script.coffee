@@ -1,10 +1,51 @@
 
 class Inhabitant
 	constructor: (@id, @name) ->
+		@inactiveState = 
+			"stroke-width": 4
+			stroke: "#ebebeb"
+
+		@activeState =
+			"stroke-width": 8
+			stroke: "#9ADEB3"
+
 
 	draw: (context) ->
-		context.circle(135 + (@id * 250), 95, 75).attr
+
+		@avatar = context.circle(135 + (@id * 250), 95, 75).attr
 			fill: "url(images/"+@name+".jpg)"
+
+		if not @home
+			@avatar.attr @inactiveState
+				
+		else
+			@avatar.attr @activeState
+
+		@label = context.text(135 + (@id * 250), 192, @name).attr
+			"font-family": "Helvetica Neue"
+			"font-size": 18
+			fill: "#999"
+
+		@status = context.text(135 + (@id * 250), 212, "is out and about").attr
+			"font-family": "Helvetica Neue"
+			"font-size": 12
+			fill: "#648D8E"
+
+	setStatus: (newStatus) ->
+		@status.attr
+			text: newStatus
+
+	isHome: () ->
+		@home
+
+	updatePresence: (isIn) ->
+		@home = isIn
+		if isIn
+			@avatar.animate @activeState, 1000
+			@setStatus "just got in"
+		else
+			@avatar.animate @inactiveState, 1000
+
 
 $ ->
 
@@ -22,3 +63,4 @@ $ ->
 	]
 
 	mate.draw(paper) for mate in housemates 
+	housemates[1].updatePresence(true)
