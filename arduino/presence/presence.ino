@@ -220,19 +220,23 @@ void turnReaderOn () {
 
 }
 
-void callback(char* topic, byte* payload, unsigned int length) {
+void callback (char* topic, byte* payload, unsigned int length) {
 
     if (String(topic) == testTopic) {
 
-        String payloadString;
+        char fuckYouPayMe[length];
 
         for (int i = 0; i < length; i++) {
 
-            payloadString.concat(payload[i]);
+            fuckYouPayMe[i] = payload[i];
+
+            // payloadString += payload[i];
 
         }
 
-        Serial.println("Payload received: {topic: " + String(topic) + ", payload: " + payloadString + "}");
+        Serial.println(fuckYouPayMe);
+
+        // Serial.println("Payload received: {topic: " + String(topic) + ", payload: " + payloadString + "}");
 
     }
 
