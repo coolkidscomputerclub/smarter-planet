@@ -40,10 +40,15 @@
   text-transform: uppercase;
   color: #ebebeb; }
 
+.historic {
+  opacity: .5; }
+
 /********************\
  $ TIMELINE
 \********************/
 .event {
+  display: block;
+  position: relative;
   padding: 30px;
   background-color: white; }
   .event .messsage {

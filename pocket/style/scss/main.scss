@@ -61,11 +61,17 @@
 	color: $grey-light;
 }
 
+.historic {
+	opacity: .5;
+}
+
 /********************\
  $ TIMELINE
 \********************/
 
 .event {
+	display: block;
+	position: relative;
 	padding: 30px;
 	background-color: $white;
 
@@ -81,6 +87,7 @@
 	&:nth-of-type(odd) {
 		background-color: $grey-lightest;
 	}
+
 }
 
 // Base bubble class

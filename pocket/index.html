@@ -50,15 +50,32 @@
 
 		<script id="presence-event-template" type="text/x-handlebars-template">
 			<li class="event">
-				<p class="message">
+				<p class="message {{type}}">
+					{{user.name}}
 					{{#if user.presence}}
-						<p>{{user.name}} just arrived home!</p>
+						arrived at home.
 					{{else}}
-						<p>{{user.name}} just left!</p>
+						left home.
 					{{/if}}
 				</p>
-				<time class="timestamp">{{time}}</time>
+				<time class="timestamp">{{timestamp}}</time>
 			</li>
+		</script>
+
+		<script id="timeline-history-template" type="text/x-handlebars-template">
+			{{#each events}}
+				<li class="event">
+					<p class="message historic {{type}}">
+						{{user.name}}
+						{{#if user.presence}}
+							arrived at home!
+						{{else}}
+							left home!
+						{{/if}}
+					</p>
+					<time class="timestamp">{{time}}</time>
+				</li>
+			{{/each}}
 		</script>
 
 		<!--CONFIG-->

@@ -30,20 +30,7 @@ var main = {
 
         });
 
-        // PRESENCE
-        this.socket.on("presence", function (data) {
-
-            console.log("Presence: ", data.user.presence);
-
-            // Compile Handebars timeline template
-			var timelineSource = $("#presence-event-template").html();
-			var timelineTemplate = Handlebars.compile(timelineSource);
-
-			// Append timeline with new presence events
-			$("#timeline ul").append(timelineTemplate(data));
-
-        });
-
+        // USERS
         this.socket.on("users", function (data) {
 
         	console.log("Users", data);
@@ -58,7 +45,39 @@ var main = {
 
         });
 
+        // HISTORIC EVENTS
+        this.socket.on("events", function (data) {
 
+        	console.log("Events", data);
+
+			var historySource = $("#timeline-history-template").html();
+			var historyTemplate = Handlebars.compile(historySource);
+
+			$("#timeline ul").append(historyTemplate(data));
+
+        });
+
+        // NEW EVENTS
+        this.socket.on("event", function (data) {
+
+        	console.log("Single event", data);
+
+        	// Presence Events
+        	var presenceEventSource = $("#presence-event-template").html();
+        	var presenceEventTemplate = Handlebars.compile(presenceEventSource);
+
+        	// Environment Events
+        	// Social Events
+
+        	// Push data to relevant template
+        	switch(data.type) {
+
+        		case "presence":
+        			$("#timeline ul").prepend(presenceEventTemplate(data));
+        			break;
+        	}
+
+        });
 
     }
 
