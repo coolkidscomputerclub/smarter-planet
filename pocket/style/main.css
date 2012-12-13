@@ -20,21 +20,24 @@
  $ USER SELECT
 \********************/
 .slider {
-  background: white;
-  height: 120px;
+  background: #363636;
   padding: 20px 0; }
   .slider ul li {
     text-align: center; }
 
-.avatar {
+.user {
   display: inline-block;
-  height: 80px;
-  width: 80px;
-  background: #ebebeb;
-  border-radius: 80px; }
+  height: 90px;
+  width: 90px;
+  border-radius: 45px;
+  border: 5px solid rgba(6, 219, 180, 0.5); }
+  .user .avatar {
+    height: 80px;
+    width: 80px;
+    border-radius: 40px; }
 
 .user-name {
-  display: none;
+  display: block;
   text-transform: uppercase;
   color: #ebebeb; }
 

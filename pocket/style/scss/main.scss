@@ -29,8 +29,7 @@
 \********************/
 
 .slider {
-	background: $white;
-	height: 120px;
+	background: $grey-dark;
 	padding: 20px 0;
 
 	ul {
@@ -42,16 +41,23 @@
 	}
 }
 
-.avatar {
+.user {
 	display: inline-block;
-	height: 80px;
-	width: 80px;
-	background: $grey-light;
-	border-radius: 80px;
+	height: 90px;
+	width: 90px;
+	border-radius: 45px;
+	border: 5px solid transparentize($glow, .5);
+
+	.avatar {
+		height: 80px;
+		width: 80px;
+		border-radius: 40px;
+	}
+
 }
 
 .user-name {
-	display: none;
+	display: block;
 	text-transform: uppercase;
 	color: $grey-light;
 }

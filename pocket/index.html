@@ -27,75 +27,27 @@
 
 		<div class="content">
 
-			<div id="user-select" class="slider">
-				<ul>
-					<li>
-						<img class="avatar" src="img/avatar/ben.jpg" />
-						<span class="slide-text user-name">Ben</span>
-					</li>
-
-					<li>
-						<img class="avatar" src="img/avatar/flo.jpg" />
-						<span class="slide-text user-name">Flo</span>
-					</li>
-
-					<li>
-						<img class="avatar" src="img/avatar/james.jpg" />
-						<span class="slide-text user-name">James</span>
-					</li>
-
-					<li>
-						<img class="avatar" src="img/avatar/saul.jpg" />
-						<span class="slide-text user-name">Saul</span>
-					</li>
-				</ul>
-			</div>
-
-			<!--
-			<div class="timeline">
-
-				<ul class="list">
-
-					<li class="event presence">
-						<div class="decor"></div>
-						<span class="message">James just went out</span>
-					</li>
-
-					<li class="event environment">
-						<div class="decor"></div>
-						<span class="message">Temp. increased by 2°C</span>
-					</li>
-
-					<li class="event social">
-						<div class="decor"></div>
-						<span class="message">Saul is making tea</span>
-					</li>
-
-				</ul>
-
-			</div>
-			-->
-
-			<script id="family-template" type="text/x-handlebars-template">
-				<ul>
-					<li>
-						{{#each users}}
-							<span class="name">{{name}}</span>
-							<img class="avatar" src="{{avatarURL}}" />
-						{{/each}}
-					</li>
-				</ul>
-			</script>
-
-			<div id="family"></div>
+			<div id="user-select" class="slider"></div>
 
 		</div>
+
+		<!--TEMPLATES-->
+		<script id="family-template" type="text/x-handlebars-template">
+			<ul>
+				{{#each users}}
+					<li>
+						<div class="user">
+							<img class="avatar" src="{{avatarURL}}" />
+						</div>
+					</li>
+				{{/each}}
+			</ul>
+		</script>
 
 		<script src="js/lib/jquery-min.js"></script>
 		<script src="js/lib/handlebars.js"></script>
 		<script src="js/lib/swipe.js"></script>
 		<script src="js/main.js"></script>
-
 	</body>
 
 </html>

@@ -1,12 +1,5 @@
 $(function(){
 
-	// Set up user-select slider
-	window.userSlider = new Swipe(document.getElementById('user-select'), {
-		callback: function() {
-			console.log("Current user ID: ", this.getPos());
-		}
-	});
-
 	var userData = {
 		users: [
 			{ id: 0, name: "Ben", 	avatarURL: "img/avatar/ben.jpg" 	},
@@ -16,10 +9,30 @@ $(function(){
 		]
 	};
 
-	// Family member templating
+	// HB: User Selection
 	var familySource = $("#family-template").html();
 	var familyTemplate = Handlebars.compile(familySource);
 
-	$("#family").append(familyTemplate(userData));
+	$("#user-select").append(familyTemplate(userData));
+
+	// Set up user selection
+	var userSlider = new Swipe(document.getElementById('user-select'), {
+
+		callback: function() {
+
+			var activeUser = "Ben";
+
+			switch(this.getPos()) {
+
+				case 0: activeUser = "Ben"; 	break;
+				case 1: activeUser = "James"; 	break;
+				case 2: activeUser = "Flo"; 	break;
+				case 3: activeUser = "Saul"; 	break;
+
+			}
+
+			console.log("Current User:", activeUser);
+		}
+	});
 
 });
