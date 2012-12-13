@@ -11,18 +11,17 @@
 #define startByte 0x0A
 #define endByte 0x0D
 #define tagLength 12
-#define delayInterval 1000
+#define delayInterval 2000
 SoftwareSerial RFID = SoftwareSerial(rxPin, txPin);
 int readerState = HIGH;
 bool reading = true;
 unsigned long previousMillis;
-String currentTag;
 
 // WiFly and MQTT
 byte ip[] = {192, 168, 0, 2};
 WiFlyClient wiFlyClient;
-PubSubClient client(ip, 8080, callback, wiFlyClient);
-char* testTopic = "test";
+PubSubClient client(ip, 1883, callback, wiFlyClient);
+char* presenceTopic = "presence";
 
 void setup () {
 
@@ -42,23 +41,25 @@ void loop () {
 
     client.loop();
 
-    // if (reading == true) {
+    if (reading == true) {
 
-    //     startReading();
+        startReading();
 
-    //     if (RFID.available() == 12) {
+        // detect noise here?
 
-    //         stopReading();
+        if (RFID.available() == 12) {
 
-    //         readTag();
+            stopReading();
 
-    //     }
+            readTag();
 
-    // } else {
+        }
 
-    //     checkDelay();
+    } else {
 
-    // }
+        checkDelay();
+
+    }
 
 }
 
@@ -88,9 +89,9 @@ void setupPubSub () {
 
         Serial.println("PubSub connected.");
 
-        client.subscribe(testTopic);
+        client.subscribe(presenceTopic);
 
-        client.publish(testTopic, "hello this is the arduino");
+        client.publish(presenceTopic, "hello this is the arduino");
 
     } else {
 
@@ -112,8 +113,6 @@ void stopReading () {
 
     reading = false;
 
-    Serial.println("reading false");
-
     turnReaderOff();
 
     startDelay();
@@ -132,43 +131,45 @@ void checkDelay () {
 
         reading = true;
 
-        Serial.println("reading is true");
-
     }
 
 }
 
 void readTag () {
 
-    Serial.println("reading tag");
-
-    char tag[10] = "";
+    char tag[11] = "";
 
     for (int bytesRead = 0; bytesRead < tagLength; bytesRead++) {
 
-        Serial.println("running loop");
+        char incomingByte = RFID.read();
 
-        int incomingByte = RFID.read();
+        if (bytesRead == 0) {
 
-        Serial.println(incomingByte);
+            Serial.print('startByte: ');
 
-        if (incomingByte == startByte) {
+            Serial.println(incomingByte);
 
-            Serial.print("startByte detected: ");
+        }
 
-            Serial.println(incomingByte, DEC);
+        if (bytesRead == 0 && incomingByte != startByte) {
+
+            // shit's fucked up
+
+            Serial.println("Got some noise...");
+
+            RFID.flush();
+
+            break;
 
         } else if (incomingByte == endByte) {
 
-            Serial.print("endByte detected: ");
-
-            Serial.println(incomingByte, DEC);
-
             processTag(tag);
+
+            Serial.println(tag);
 
         } else {
 
-            tag[bytesRead] = incomingByte;
+            tag[bytesRead-1] = incomingByte;
 
         }
 
@@ -178,13 +179,11 @@ void readTag () {
 
 void processTag (char tag[]) {
 
-    currentTag = String(tag);
+    tag[10] = '\0';
 
-    Serial.print("Tag has been read: ");
+    Serial.println("Payload sent: {topic: " + String(presenceTopic) + ", payload: " + tag + "}");
 
-    Serial.println(currentTag);
-
-    client.publish(testTopic, tag);
+    client.publish(presenceTopic, tag);
 
     RFID.flush();
 
@@ -222,20 +221,19 @@ void turnReaderOn () {
 
 }
 
-void callback(char* topic, byte* payload, unsigned int length) {
+void callback (char* topic, byte* payload, unsigned int length) {
 
-    if (String(topic) == testTopic) {
+    if (String(topic) == presenceTopic) {
 
-        char payloadChar[] = "";
-
-        Serial.print("length: ");
-        Serial.println(length);
+        char payloadChar[length+1];
 
         for (int i = 0; i < length; i++) {
 
-            payloadChar[i] = (char) payload[i];
+            payloadChar[i] = payload[i];
 
         }
+
+        payloadChar[length] = '\0';
 
         Serial.println("Payload received: {topic: " + String(topic) + ", payload: " + payloadChar + "}");
 

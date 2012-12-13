@@ -1,9 +1,10 @@
-var mqtt = require('mqttjs'),
-    port = 8080,
+var mqtt = require("mqttjs"),
+    port = 1883,
     host = "127.0.0.1",
     topic = "test",
     mqttServer,
-    mqttClient;
+    mqttClient,
+    io = require("socket.io").listen(8080);
 
 mqttServer = mqtt.createServer(function (client) {
 
@@ -15,7 +16,7 @@ mqttServer = mqtt.createServer(function (client) {
 
     }
 
-    client.on('connect', function (packet) {
+    client.on("connect", function (packet) {
 
         client.connack({
 
@@ -35,7 +36,7 @@ mqttServer = mqtt.createServer(function (client) {
 
                 topic: topic,
 
-                payload: "HELLO"
+                payload: "Hi, Arduino!"
 
             });
 
@@ -43,7 +44,7 @@ mqttServer = mqtt.createServer(function (client) {
 
     });
 
-    client.on('publish', function (packet) {
+    client.on("publish", function (packet) {
 
         // publish message to all clients
         for (var k in self.clients) {
@@ -63,11 +64,9 @@ mqttServer = mqtt.createServer(function (client) {
 
         }
 
-        console.log("Publish received: ", packet);
-
     });
 
-    client.on('subscribe', function (packet) {
+    client.on("subscribe", function (packet) {
 
         var granted = [];
 
@@ -83,29 +82,29 @@ mqttServer = mqtt.createServer(function (client) {
 
     });
 
-    client.on('pingreq', function (packet) {
+    client.on("pingreq", function (packet) {
 
         client.pingresp();
 
     });
 
-    client.on('disconnect', function (packet) {
+    client.on("disconnect", function (packet) {
 
         client.stream.end();
 
     });
 
-    client.on('close', function (err) {
+    client.on("close", function (err) {
 
         delete self.clients[client.id];
 
     });
 
-    client.on('error', function (err) {
+    client.on("error", function (err) {
 
         client.stream.end();
 
-        util.log('error!');
+        util.log("error!");
 
     });
 
@@ -113,14 +112,14 @@ mqttServer = mqtt.createServer(function (client) {
 
 mqttClient = mqtt.createClient(port, host, function (err, client) {
 
-    // connect to the MQTT server running at host on port, tell it we're "nodeClient"
+    // connect to the MQTT server running at host on port, tell it we"re "nodeClient"
     client.connect({
 
         client: "nodeClient"
 
     });
 
-    client.on('connack', function (packet) {
+    client.on("connack", function (packet) {
 
         if (packet.returnCode === 0) {
 
@@ -128,7 +127,7 @@ mqttClient = mqtt.createClient(port, host, function (err, client) {
 
         } else {
 
-            console.log('connack error %d', packet.returnCode);
+            console.log("connack error %d", packet.returnCode);
 
             process.exit(-1);
 
@@ -136,23 +135,46 @@ mqttClient = mqtt.createClient(port, host, function (err, client) {
 
     });
 
-    client.on('publish', function (packet) {
+    client.on("publish", function (packet) {
 
         console.log("Payload received: ", packet.topic, packet.payload);
 
+        if (packet.topic === "presence") {
+
+            io.sockets.emit("presence", {
+
+                user: "saul",
+
+                state: 1
+
+            });
+
+        }
+
     });
 
-    client.on('close', function () {
+    client.on("close", function () {
 
         process.exit(0);
 
     });
 
-    client.on('error', function (e) {
+    client.on("error", function (e) {
 
-        console.log('error %s', e);
+        console.log("error %s", e);
 
         process.exit(-1);
+
+    });
+
+});
+
+io.sockets.on("connection", function (socket) {
+
+    // on joining, send a welcome message
+    socket.emit("message", {
+
+        message: "Congrats, your penis fits in the socket!"
 
     });
 
