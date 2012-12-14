@@ -1,4 +1,8 @@
 
+#
+# CLASSES
+#
+
 class Inhabitant
 	constructor: (@index, @id, @name) ->
 		@inactiveState = 
@@ -36,6 +40,8 @@ class Inhabitant
 		@status.attr
 			text: newStatus
 
+	setTempPreference: (@tempPreference) ->
+
 	isHome: () ->
 		@home
 
@@ -57,12 +63,22 @@ class Inhabitant
 			@avatar.animate @inactiveState, 1000
 			@setStatus "just left"
 
+
+#
+# HELPER FUNCTIONS
+#
+
 step = ->
 	date = new Date();
 	hour = date.getHours()
 	minutes = date.getMinutes() * (2/3)
 	window.nowBar.animate x: 32 + (hour * 40) + minutes, 300 
 	window.tempLine.animate "path": "M32 500L" + ( 32 + (hour * 40) + minutes ) + " 500", 300
+
+
+#
+# SOCKET LOGIC
+#
 
 main =
 	init: ->
@@ -79,12 +95,18 @@ main =
 		@socket.on "users", (data) ->
 			for user in data.users
 				housemates[user.id].setPresence(user.presence)
+				housemates[user.id].setTempPreference(user.preferences.temperature)
 
 		@socket.on "event", (data) ->
 			switch data.type
 				when "presence" then \
 					# console.log data.user.name + "'s presence changed: " + data.user.presence
 					housemates[data.user.id].togglePresence()
+
+
+#
+# PREREQUISITES
+#
 
 config = 
 	socketServer: '192.168.0.2'
@@ -96,6 +118,11 @@ housemates =
 	james:   new Inhabitant(3, "james", "James")
 
 currentLine = []
+
+
+#
+# DOCUMENT READY
+#
 
 $ ->
 

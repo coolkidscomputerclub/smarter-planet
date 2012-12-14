@@ -46,6 +46,10 @@
       });
     };
 
+    Inhabitant.prototype.setTempPreference = function(tempPreference) {
+      this.tempPreference = tempPreference;
+    };
+
     Inhabitant.prototype.isHome = function() {
       return this.home;
     };
@@ -105,7 +109,8 @@
         _results = [];
         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
           user = _ref[_i];
-          _results.push(housemates[user.id].setPresence(user.presence));
+          housemates[user.id].setPresence(user.presence);
+          _results.push(housemates[user.id].setTempPreference(user.preferences.temperature));
         }
         return _results;
       });
