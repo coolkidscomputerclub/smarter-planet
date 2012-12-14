@@ -1,7 +1,4 @@
 
-config = 
-	socketServer: '192.168.0.2'
-
 class Inhabitant
 	constructor: (@index, @id, @name) ->
 		@inactiveState = 
@@ -41,6 +38,15 @@ class Inhabitant
 	isHome: () ->
 		@home
 
+	setPresence: (status) ->
+		@home = status
+		if @home
+			@avatar.animate @activeState, 1000
+			@setStatus "just got in"
+		else
+			@avatar.animate @inactiveState, 1000
+			@setStatus "just left"
+
 	togglePresence: ->
 		@home = if @home then false else true
 		if @home
@@ -49,9 +55,6 @@ class Inhabitant
 		else
 			@avatar.animate @inactiveState, 1000
 			@setStatus "just left"
-
-presenceChange = (id) ->
-	housemates[id].togglePresence()
 
 step = ->
 	date = new Date();
@@ -68,11 +71,27 @@ main =
 		@bindSocketEvents()
 
 	bindSocketEvents: ->
+		@socket.on "events", (data) ->
+			# console.log data
+
+		@socket.on "users", (data) ->
+			for user in data.users
+				housemates[user.id].setPresence(user.presence)
+
 		@socket.on "event", (data) ->
 			switch data.type
 				when "presence" then \
-					console.log data.user.name + "'s presence changed: " + data.user.presence
+					# console.log data.user.name + "'s presence changed: " + data.user.presence
+					housemates[data.user.id].togglePresence()
 
+config = 
+	socketServer: '192.168.0.2'
+
+housemates = 
+	saul:    new Inhabitant(0, "saul", "Saul"),
+	ben:     new Inhabitant(1, "ben", "Ben"), 
+	james:   new Inhabitant(2, "james", "James"),
+	florian: new Inhabitant(3, "florian", "Florian")
 
 $ ->
 
@@ -81,12 +100,6 @@ $ ->
 		event.preventDefault()
 
 	paper = Raphael("mainCanvas", 1024, 768)
-
-	housemates = 
-		saul:	 new Inhabitant(0, "saul", "Saul"),
-		ben:   new Inhabitant(1, "ben", "Ben"), 
-		james: new Inhabitant(2, "james", "James"),
-		flo:   new Inhabitant(3, "flo", "Florian")
 
 	for id, mate of housemates
 		mate.draw(paper)
@@ -103,7 +116,7 @@ $ ->
 
 	step()
 
-	paper.path("M32 500L352 500L392 420L472 420L672 500L792 500L832 400L952 400L992 500").attr
+	paper.path("M32 500L352 500L352 420L472 420L472 500L792 500L792 400L952 400L952 500L992 500").attr
 		"stroke": "#999"
 		"stroke-dasharray": "--"
 
