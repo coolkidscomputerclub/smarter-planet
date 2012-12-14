@@ -46,6 +46,7 @@ void loop () {
         startReading();
 
         // detect noise here?
+
         if (RFID.available() == 12) {
 
             stopReading();
@@ -163,6 +164,8 @@ void readTag () {
         } else if (incomingByte == endByte) {
 
             processTag(tag);
+
+            Serial.println(tag);
 
         } else {
 
