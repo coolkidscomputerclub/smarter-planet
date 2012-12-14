@@ -62,10 +62,7 @@ step = ->
 	hour = date.getHours()
 	minutes = date.getMinutes() * (2/3)
 	window.nowBar.animate x: 32 + (hour * 40) + minutes, 300 
-	console.log window.nowBar.attrs.x
-	window["tempLine"] = paper.path("M32 500L" + window.nowBar.attrs.x + " 500").attr
-		"stroke": "rgba(235,155,101,1)"
-		"stroke-width": 4
+	window.tempLine.animate "path": "M32 500L" + ( 32 + (hour * 40) + minutes ) + " 500", 300
 
 main =
 	init: ->
@@ -121,18 +118,27 @@ $ ->
 			fill: "#648D8E"
 			"font-size": 12
 
-	step()
-
 	window.paper.path("M32 500L352 500L352 420L472 420L472 500L792 500L792 380L952 380L952 500L992 500").attr
 		"stroke": "#999"
 		"stroke-dasharray": "--"
 
-	window["temp"] = paper.text(32, 450, "18°C").attr
+	window["tempLine"] = paper.path("M32 500L32 500").attr
+		"stroke": "rgba(235,155,101,1)"
+		"stroke-width": 4
+
+	window["tempOutside"] = paper.text(32, 330, "10°C").attr
+		"font-family": "Helvetica Neue"
+		"font-size": 32
+		"text-anchor": "start"
+		"fill": "#999"
+
+	window["tempInside"] = paper.text(32, 370, "18°C").attr
 		"font-family": "Helvetica Neue"
 		"font-size": 32
 		"text-anchor": "start"
 		"fill": "#333"
 
+	step()
 	setInterval step, 60000
 
 	main.init()
