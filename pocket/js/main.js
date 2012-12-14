@@ -19,9 +19,40 @@ var main = {
 
     bindSocketEvents: function () {
 
-    	var $timeline = $("#events");
-
         console.log("Socket events bound.");
+
+        var $timeline = $("#events");
+
+        function parseDates (timestamp) {
+
+	    	// Parse event date
+	    	var date = new Date(timestamp);
+
+	    	var evtYear 	= date.getFullYear();
+	    	var evtMonth 	= date.getMonth() + 1;
+	    	var evtDate 	= date.getDate();
+	    	var evtHours 	= date.getHours();
+	    	var evtMins 	= date.getMinutes();
+	    	var evtSecs 	= date.getSeconds();
+
+	    	function addZero(date) {
+	    		(String(date).length < 2) ? date = String("0" + date) :  date = String(date);
+	    		return date
+	    	}
+
+	    	var formattedTimestamp = "";
+	    		formattedTimestamp += evtYear;
+	    		formattedTimestamp += addZero(evtMonth);
+	    		formattedTimestamp += addZero(evtDate);
+	    		formattedTimestamp += addZero(evtHours);
+	    		formattedTimestamp += addZero(evtMins);
+	    		formattedTimestamp += addZero(evtSecs);
+
+	    	var relativeTime = moment(formattedTimestamp, "YYYYMMDDhhmmss").fromNow();
+
+	    	return relativeTime;
+
+    	}
 
         // SYSTEM MESSAGES
         this.socket.on("message", function (data) {
@@ -41,7 +72,17 @@ var main = {
 
 			$("#user-select").html(familyTemplate(data));
 
-			window.userSelector = new Swipe(document.getElementById("user-select"));
+			window.userSelector = new Swipe(document.getElementById("user-select"), {
+
+				startSlide: 2,
+
+				callback: function() {
+
+					console.log(this.getPos());
+
+				}
+
+			});
 
         });
 
@@ -53,6 +94,21 @@ var main = {
 			var historySource = $("#timeline-history-template").html();
 			var historyTemplate = Handlebars.compile(historySource);
 
+			// Flip event history
+			function flipHistory(a,b) {
+				return (b.timestamp - a.timestamp);
+			}
+
+			console.log(data.events.sort(flipHistory));
+
+			// Get timestamps for each event
+			for (var i = 0; i < data.events.length; i++) {
+
+				data.events[i].timeago = parseDates(data.events[i].timestamp);
+
+			}
+
+			// Add historic events to timeline
 			$("#timeline ul").append(historyTemplate(data));
 
         });
@@ -67,15 +123,45 @@ var main = {
         	var presenceEventTemplate = Handlebars.compile(presenceEventSource);
 
         	// Environment Events
+        	var environmentEventSource= $("#environment-event-template").html();
+        	var environmentEventTemplate = Handlebars.compile(environmentEventSource);
+
         	// Social Events
+        	var socialEventSource = $("#social-event-template").html();
+        	var socialEventTemplate = Handlebars.compile(socialEventSource);
+
+        	var $timeline = $("#timeline ul");
+
+        	data.timeago = parseDates(data.timestamp);
 
         	// Push data to relevant template
         	switch(data.type) {
 
         		case "presence":
-        			$("#timeline ul").prepend(presenceEventTemplate(data));
+        			$timeline.prepend(presenceEventTemplate(data));
+        			break;
+
+        		case "environment":
+        			$timeline.prepend(environmentEventTemplate(data));
+        			break;
+
+        		case "social":
+        			$timeline.prepend(socialEventTemplate(data));
         			break;
         	}
+
+        	// Update avatar presence indicator
+        	var $assocUser = $("." + data.user.id);
+
+   			if ($assocUser.hasClass("absent")) {
+
+   				$assocUser.removeClass("absent").addClass("present");
+
+   			} else if ($assocUser.hasClass("present")) {
+
+   				$assocUser.removeClass("present").addClass("absent");
+
+   			}
 
         });
 
