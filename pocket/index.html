@@ -40,7 +40,11 @@
 			<ul>
 				{{#each users}}
 					<li class="user">
-						{{#if presence}}<div class="user present">{{else}}<div class="user absent">{{/if}}
+						{{#if presence}}
+						<div class="user {{id}} present">
+						{{else}}
+						<div class="user {{id}} absent">
+						{{/if}}
 							<img class="avatar" src="{{avatar}}" />
 						</div>
 					</li>
@@ -50,15 +54,46 @@
 
 		<script id="presence-event-template" type="text/x-handlebars-template">
 			<li class="event">
-				<p class="message">
+				<p class="message {{type}}">
+					{{user.name}}
 					{{#if user.presence}}
-						<p>{{user.name}} just arrived home!</p>
+						arrived at home.
 					{{else}}
-						<p>{{user.name}} just left!</p>
+						left home.
 					{{/if}}
 				</p>
-				<time class="timestamp">{{time}}</time>
+				<time class="timestamp">{{timeago}}</time>
 			</li>
+		</script>
+
+		<script id="environment-event-template" type="text/x-handlebars-template">
+			<li class="event">
+				<p class="message {{type}}">{{type}}</p>
+				<time class="timestamp">{{timeago}}</time>
+			</li>
+		</script>
+
+		<script id="social-event-template" type="text/x-handlebars-template">
+			<li class="event">
+				<p class="message {{type}}">{{type}}</p>
+				<time class="timestamp">{{timeago}}</time>
+			</li>
+		</script>
+
+		<script id="timeline-history-template" type="text/x-handlebars-template">
+			{{#each events}}
+				<li class="event">
+					<p class="message historic {{type}}">
+						{{user.name}}
+						{{#if user.presence}}
+							arrived at home.
+						{{else}}
+							left home.
+						{{/if}}
+					</p>
+					<time class="timestamp">{{timeago}}</time>
+				</li>
+			{{/each}}
 		</script>
 
 		<!--CONFIG-->
@@ -73,6 +108,7 @@
 
 		<script src="js/lib/jquery-min.js"></script>
 		<script src="js/lib/socket.io.min.js"></script>
+		<script src="js/lib/moment.js"></script>
 		<script src="js/lib/handlebars.js"></script>
 		<script src="js/lib/swipe.js"></script>
 		<script src="js/main.js"></script>
