@@ -7,11 +7,12 @@ class Inhabitant
 
 		@activeState =
 			"stroke-width": 8
-			stroke: "#9ADEB3"
+			stroke: "rgba(6,219,180, 1)"
+			# stroke: "#9ADEB3"
 
 
-	draw: (context) ->
-		@avatar = context.circle(135 + (@index * 250), 95, 75).attr
+	draw: () ->
+		@avatar = window.paper.circle(135 + (@index * 250), 95, 75).attr
 			fill: "url(images/"+@id+".jpg)"
 			
 		@avatar.click (e) ->
@@ -21,12 +22,12 @@ class Inhabitant
 		else
 			@avatar.attr @activeState
 
-		@label = context.text(135 + (@index * 250), 192, @name).attr
+		@label = window.paper.text(135 + (@index * 250), 192, @name).attr
 			"font-family": "Helvetica Neue"
 			"font-size": 18
 			fill: "#999"
 
-		@status = context.text(135 + (@index * 250), 212, "is out and about").attr
+		@status = window.paper.text(135 + (@index * 250), 212, "is out and about").attr
 			"font-family": "Helvetica Neue"
 			"font-size": 12
 			fill: "#648D8E"
@@ -42,10 +43,10 @@ class Inhabitant
 		@home = status
 		if @home
 			@avatar.animate @activeState, 1000
-			@setStatus "just got in"
+			@setStatus "is in"
 		else
 			@avatar.animate @inactiveState, 1000
-			@setStatus "just left"
+			@setStatus "is out and about"
 
 	togglePresence: ->
 		@home = if @home then false else true
@@ -61,6 +62,10 @@ step = ->
 	hour = date.getHours()
 	minutes = date.getMinutes() * (2/3)
 	window.nowBar.animate x: 32 + (hour * 40) + minutes, 300 
+	console.log window.nowBar.attrs.x
+	window["tempLine"] = paper.path("M32 500L" + window.nowBar.attrs.x + " 500").attr
+		"stroke": "rgba(235,155,101,1)"
+		"stroke-width": 4
 
 main =
 	init: ->
@@ -89,9 +94,11 @@ config =
 
 housemates = 
 	saul:    new Inhabitant(0, "saul", "Saul"),
-	ben:     new Inhabitant(1, "ben", "Ben"), 
-	james:   new Inhabitant(2, "james", "James"),
-	florian: new Inhabitant(3, "florian", "Florian")
+	florian: new Inhabitant(1, "florian", "Florian"),
+	ben:     new Inhabitant(2, "ben", "Ben"), 
+	james:   new Inhabitant(3, "james", "James")
+
+currentLine = []
 
 $ ->
 
@@ -99,12 +106,12 @@ $ ->
 	$(document).bind 'touchmove', (event) ->
 		event.preventDefault()
 
-	paper = Raphael("mainCanvas", 1024, 768)
+	window["paper"] = Raphael("mainCanvas", 1024, 768)
 
 	for id, mate of housemates
-		mate.draw(paper)
+		mate.draw()
 		
-	window.nowBar = paper.rect(32, 300, 3, 300).attr
+	window["nowBar"] = paper.rect(32, 300, 3, 300).attr
 		fill: "#ebebeb"
 		"stroke-width": 0
 		"fill-opacity": 0.6
@@ -116,9 +123,15 @@ $ ->
 
 	step()
 
-	paper.path("M32 500L352 500L352 420L472 420L472 500L792 500L792 400L952 400L952 500L992 500").attr
+	window.paper.path("M32 500L352 500L352 420L472 420L472 500L792 500L792 380L952 380L952 500L992 500").attr
 		"stroke": "#999"
 		"stroke-dasharray": "--"
+
+	window["temp"] = paper.text(32, 450, "18°C").attr
+		"font-family": "Helvetica Neue"
+		"font-size": 32
+		"text-anchor": "start"
+		"fill": "#333"
 
 	setInterval step, 60000
 
