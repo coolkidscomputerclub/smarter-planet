@@ -1,0 +1,126 @@
+@import 'color';
+
+/********************\
+ $ RESET
+\********************/
+
+* {
+	box-sizing: border-box;
+}
+
+/********************\
+ $ MAIN CONTENT
+\********************/
+
+.content {
+	background: $white;
+}
+
+/********************\
+ $ USER SELECT
+\********************/
+
+.slider {
+	background: $grey-dark;
+	padding: 20px 0;
+
+	ul {
+
+		li {
+			text-align: center;
+			//TODO: Fix edge-to-edge avatar preview
+		}
+	}
+}
+
+.user {
+	height: 90px;
+	width: 90px;
+	border-radius: 45px;
+	margin: 0 auto;
+
+	.avatar {
+		height: 80px;
+		width: 80px;
+		border-radius: 40px;
+	}
+
+}
+
+.present {
+	border: 5px solid transparentize($present, .6);
+}
+
+.absent {
+	border: 5px solid transparentize($absent, .6);
+}
+
+.user-name {
+	display: block;
+	text-transform: uppercase;
+	color: $grey-light;
+}
+
+.historic {
+	opacity: .5;
+}
+
+/********************\
+ $ TIMELINE
+\********************/
+
+.event {
+	display: block;
+	position: relative;
+	padding: 30px;
+	background-color: $white;
+
+	.messsage {
+		color: $grey-dark;
+	}
+
+	.timestamp {
+		color: darken($grey-light, 15%);
+		font-size: 12px;
+	}
+
+	&:nth-of-type(odd) {
+		background-color: $grey-lightest;
+	}
+
+}
+
+// Base bubble class
+
+.bubble {
+	content: "";
+	position: absolute;
+	top: 25%;
+	display: inline-block;
+	height: 25px;
+	width: 25px;
+	border-radius: 25px;
+	margin: 0 20px;
+	z-index: 10;
+	border: 3px solid $white;
+}
+
+// Event types
+
+.presence {
+	color: $presence;
+}
+
+.environment {
+	color: $environment;
+
+}
+
+.social {
+	color: $social;
+}
+
+
+
+
+
