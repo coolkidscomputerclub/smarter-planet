@@ -1,6 +1,9 @@
 
+config = 
+	socketServer: '192.168.0.2'
+
 class Inhabitant
-	constructor: (@id, @name) ->
+	constructor: (@index, @id, @name) ->
 		@inactiveState = 
 			"stroke-width": 4
 			stroke: "#ebebeb"
@@ -11,8 +14,8 @@ class Inhabitant
 
 
 	draw: (context) ->
-		@avatar = context.circle(135 + (@id * 250), 95, 75).attr
-			fill: "url(images/"+@name+".jpg)"
+		@avatar = context.circle(135 + (@index * 250), 95, 75).attr
+			fill: "url(images/"+@id+".jpg)"
 			
 		@avatar.click (e) ->
 
@@ -21,12 +24,12 @@ class Inhabitant
 		else
 			@avatar.attr @activeState
 
-		@label = context.text(135 + (@id * 250), 192, @name).attr
+		@label = context.text(135 + (@index * 250), 192, @name).attr
 			"font-family": "Helvetica Neue"
 			"font-size": 18
 			fill: "#999"
 
-		@status = context.text(135 + (@id * 250), 212, "is out and about").attr
+		@status = context.text(135 + (@index * 250), 212, "is out and about").attr
 			"font-family": "Helvetica Neue"
 			"font-size": 12
 			fill: "#648D8E"
@@ -47,16 +50,29 @@ class Inhabitant
 			@avatar.animate @inactiveState, 1000
 			@setStatus "just left"
 
-
 presenceChange = (id) ->
 	housemates[id].togglePresence()
-
 
 step = ->
 	date = new Date();
 	hour = date.getHours()
 	minutes = date.getMinutes() * (2/3)
 	window.nowBar.animate x: 32 + (hour * 40) + minutes, 300 
+
+main =
+	init: ->
+		@connectSocket()
+
+	connectSocket: ->
+		@socket = io.connect("//" + config.socketServer + ":8080")
+		@bindSocketEvents()
+
+	bindSocketEvents: ->
+		@socket.on "event", (data) ->
+			switch data.type
+				when "presence" then \
+					console.log data.user.name + "'s presence changed: " + data.user.presence
+
 
 $ ->
 
@@ -66,16 +82,15 @@ $ ->
 
 	paper = Raphael("mainCanvas", 1024, 768)
 
-	housemates = [
-		new Inhabitant(0,"Saul"),
-		new Inhabitant(1,"Ben"), 
-		new Inhabitant(2,"James"),
-		new Inhabitant(3,"Flo")
-	]
+	housemates = 
+		saul:	 new Inhabitant(0, "saul", "Saul"),
+		ben:   new Inhabitant(1, "ben", "Ben"), 
+		james: new Inhabitant(2, "james", "James"),
+		flo:   new Inhabitant(3, "flo", "Florian")
 
-	mate.draw(paper) for mate in housemates 
-	housemates[1].togglePresence()
-
+	for id, mate of housemates
+		mate.draw(paper)
+		
 	window.nowBar = paper.rect(32, 300, 3, 300).attr
 		fill: "#ebebeb"
 		"stroke-width": 0
@@ -93,4 +108,6 @@ $ ->
 		"stroke-dasharray": "--"
 
 	setInterval step, 60000
+
+	main.init()
 
