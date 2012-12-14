@@ -14,86 +14,45 @@ var database,
     users,
     reset = false,
     _users = [{
+        id: "saul",
         name: "Saul",
         preferences: {
             temperature: 22
         },
+        asleep: true,
         avatar: "img/avatar/saul.jpg",
         presence: false,
-        id: "0800E3CE07"
+        tagId: "0800E3CE07"
     }, {
+        id: "florian",
         name: "Florian",
         preferences: {
             temperature: 26
         },
+        asleep: false,
         avatar: "img/avatar/flo.jpg",
         presence: false,
-        id: "0800DE1994"
+        tagId: "0800DE1994"
     }, {
+        id: "ben",
         name: "Ben",
         preferences: {
             temperature: 20
         },
+        asleep: false,
         avatar: "img/avatar/ben.jpg",
         presence: false,
-        id: "0800DE1B47"
+        tagId: "0800DE1B47"
     }, {
+        id: "james",
         name: "James",
         preferences: {
             temperature: 18
         },
+        asleep: false,
         avatar: "img/avatar/james.jpg",
         presence: false,
-        id: "0800E3CA33"
-    }],
-    _events = [{
-        type: 'presence',
-        user: {
-            name: "Saul",
-            preferences: {
-                temperature: 22
-            },
-            avatar: "img/avatar/saul.jpg",
-            presence: true,
-            id: "0800E3CE07"
-        },
-        timestamp: new Date()
-    }, {
-        type: 'presence',
-        user: {
-            name: "Saul",
-            preferences: {
-                temperature: 22
-            },
-            avatar: "img/avatar/saul.jpg",
-            presence: false,
-            id: "0800E3CE07"
-        },
-        timestamp: new Date()
-    }, {
-        type: 'presence',
-        user: {
-            name: "Ben",
-            preferences: {
-                temperature: 20
-            },
-            avatar: "img/avatar/ben.jpg",
-            presence: false,
-            id: "0800DE1B47"
-        },
-        timestamp: new Date()
-    }, {
-        type: 'presence',
-        user: {
-            name: "Ben",
-            preferences: {
-                temperature: 20
-            },
-            avatar: "img/avatar/ben.jpg",
-            presence: true,
-            id: "0800DE1B47"
-        },
-        timestamp: new Date()
+        tagId: "0800E3CA33"
     }];
 
 // Connect to the db
@@ -101,13 +60,13 @@ MongoClient.connect("mongodb://localhost:27017/inhabit", function(error, db) {
 
     if(!error) {
 
-        console.log("Connected.");
+        console.log("Connected to mangodb.");
 
         database = db;
 
     } else {
 
-        console.log("Not connected.");
+        console.log("Not connected mangodob.");
 
         return false;
 
@@ -123,7 +82,7 @@ MongoClient.connect("mongodb://localhost:27017/inhabit", function(error, db) {
 
             events = items;
 
-            console.log("Events in events collection: ", events);
+            // console.log("Events in events collection: ", events);
 
             // if users collection is empty, populate it
             if (reset === true) {
@@ -138,23 +97,6 @@ MongoClient.connect("mongodb://localhost:27017/inhabit", function(error, db) {
                     } else {
 
                         console.log(error);
-
-                    }
-
-                });
-
-            } else if (events.length < 1) {
-
-                // insert users into the users collection
-                eventCollection.insert(_events, {safe: true}, function(error, result) {
-
-                    if (error === null) {
-
-                        console.log("Events added to collection: ", result);
-
-                    } else {
-
-                        console.log("Events not added to collection: ", error);
 
                     }
 
@@ -180,7 +122,7 @@ MongoClient.connect("mongodb://localhost:27017/inhabit", function(error, db) {
 
             users = items;
 
-            console.log("Users in users collection: ", users);
+            // console.log("Users in users collection: ", users);
 
             // if users collection is empty, populate it
             if (users.length === 0 || reset === true) {
@@ -241,6 +183,8 @@ MongoClient.connect("mongodb://localhost:27017/inhabit", function(error, db) {
         }
 
     });
+
+    updateState();
 
 });
 
@@ -367,92 +311,111 @@ mqttClient = mqtt.createClient(port, host, function (error, client) {
 
         if (packet.topic === topic) {
 
-            userCollection.find({id: packet.payload}).toArray(function (error, items) {
+            userCollection.findOne({tagId: packet.payload}, function (error, item) {
 
                 if (error === null) {
 
-                    if (items.length > 0) {
+                    var user = item;
 
-                        var user = items[0];
+                    console.log("Setting " + user.name + "'s presence to: ", !user.presence);
 
-                        console.log("Setting " + user.name + "'s presence to: ", !user.presence);
+                    userCollection.update({name: user.name}, {$set: {presence: !user.presence}}, {safe: true}, function(error, result) {
 
-                        userCollection.update({name: user.name}, {$set: {presence: !user.presence}}, {safe: true}, function(error, result) {
+                        if (error === null) {
 
-                            if (error === null) {
+                            userCollection.findOne({name: user.name}, function (error, item) {
 
-                                userCollection.find({name: user.name}).toArray(function (error, items) {
+                                if (error === null) {
 
-                                    if (error === null) {
+                                    var timestamp = (new Date()).getTime();
 
-                                        if (items.length > 0) {
+                                    user = item;
 
-                                            var timestamp = new Date();
+                                    // register the presence event
+                                    eventCollection.insert({
 
-                                            user = items[0];
+                                        type: "presence",
 
-                                            // register the presence event
-                                            eventCollection.insert({
+                                        user: user,
 
-                                                type: "presence",
+                                        timestamp: timestamp
 
-                                                user: user,
+                                    }, {safe: true}, function (error, result) {
 
-                                                timestamp: timestamp
+                                        if (error === null) {
 
-                                            }, {safe: true}, function (error, result) {
+                                            console.log("Event logged: ", result);
 
-                                                if (error === null) {
+                                        } else {
 
-                                                    console.log("Event logged: ", result);
-
-                                                } else {
-
-                                                    console.log(error);
-
-                                                }
-
-                                            });
-
-                                            // tell connected clients that an event has occurred
-                                            io.sockets.emit("event", {
-
-                                                type: "presence",
-
-                                                user: user,
-
-                                                timestamp: timestamp
-
-                                            });
-
-                                            // tell connected clients that a users presence has changed
-                                            io.sockets.emit("presence", {
-
-                                                user: user,
-
-                                                timestamp: timestamp
-
-                                            });
+                                            console.log(error);
 
                                         }
 
-                                    } else {
+                                    });
 
-                                        console.log(error);
+                                    // tell connected clients that an event has occurred
+                                    io.sockets.emit("event", {
 
-                                    }
+                                        type: "presence",
 
-                                });
+                                        user: user,
 
-                            } else {
+                                        timestamp: timestamp
 
-                                console.log(error);
+                                    });
 
-                            }
+                                    updateState(function () {
 
-                        });
+                                        if (user.presence === true) {
 
-                    }
+                                            var asleep = [];
+
+                                            for (var i in usersObj) {
+
+                                                if (usersObj.hasOwnProperty(i)) {
+
+                                                    if (usersObj[i].asleep === true) {
+
+                                                        asleep.push(usersObj[i]);
+
+                                                    }
+
+                                                }
+
+                                            }
+
+                                            if (asleep.length > 0) {
+
+                                                io.sockets.emit("ben", {
+
+                                                    type: "warning",
+
+                                                    users: asleep
+
+                                                });
+
+                                            }
+
+                                        }
+
+                                    });
+
+                                } else {
+
+                                    console.log(error);
+
+                                }
+
+                            });
+
+                        } else {
+
+                            console.log(error);
+
+                        }
+
+                    });
 
                 } else {
 
@@ -539,3 +502,37 @@ io.sockets.on("connection", function (socket) {
     });
 
 });
+
+var usersObj = {};
+
+function updateState (callback) {
+
+    var userCollection = database.collection('users');
+
+    userCollection.find().toArray(function (error, items) {
+
+        if (error === null) {
+
+            usersObj = {};
+
+            for (var i = 0, j = items.length; i < j; i++) {
+
+                usersObj[items[i].id] = items[i];
+
+            }
+
+            if (typeof callback === 'function') {
+
+                callback();
+
+            }
+
+        } else {
+
+            console.log(error);
+
+        }
+
+    });
+
+}
