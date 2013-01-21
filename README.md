@@ -21,7 +21,7 @@ To get an example running locally, follow these steps:-
 
 Keeps you committing at 2:45AM, [get 'er done](https://github.com/mroth/lolcommits) — I'm doing it post-commit and saving images to `repo/.lolcommits` so that we can all see each others lolcommits. Join in the fun:
 
-![testing](http://f.cl.ly/items/3Z0U3f0B3c0j37093O0v/75fab19738a.jpg)
+![testing](https://github.com/saulhardman/smarter-planet/blob/master/.lolcommits/smarter-planet/562389682a6.jpg?raw=true)
 
 ## Ideas
 

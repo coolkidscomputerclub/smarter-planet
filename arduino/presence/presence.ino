@@ -22,6 +22,7 @@ byte ip[] = {192, 168, 0, 2};
 WiFlyClient wiFlyClient;
 PubSubClient client(ip, 1883, callback, wiFlyClient);
 char* presenceTopic = "presence";
+char* teaTopic = "tea";
 
 void setup () {
 
@@ -44,8 +45,6 @@ void loop () {
     if (reading == true) {
 
         startReading();
-
-        // detect noise here?
 
         if (RFID.available() == 12) {
 
@@ -90,8 +89,6 @@ void setupPubSub () {
         Serial.println("PubSub connected.");
 
         client.subscribe(presenceTopic);
-
-        client.publish(presenceTopic, "hello this is the arduino");
 
     } else {
 
@@ -151,15 +148,9 @@ void readTag () {
 
         }
 
-        if (bytesRead == 0 && incomingByte != startByte) {
+        if (incomingByte == startByte) {
 
-            // shit's fucked up
-
-            Serial.println("Got some noise...");
-
-            RFID.flush();
-
-            break;
+            // startbyte
 
         } else if (incomingByte == endByte) {
 
@@ -179,11 +170,19 @@ void readTag () {
 
 void processTag (char tag[]) {
 
-    tag[10] = '\0';
+    if (tag[0] == '0' && tag[1] == '8' && tag[2] == '0' && tag[3] == '0') {
 
-    Serial.println("Payload sent: {topic: " + String(presenceTopic) + ", payload: " + tag + "}");
+        tag[10] = '\0';
 
-    client.publish(presenceTopic, tag);
+        Serial.println("Payload sent: {topic: " + String(presenceTopic) + ", payload: " + tag + "}");
+
+        client.publish(presenceTopic, tag);
+
+    } else {
+
+        Serial.println("Got some noise...");
+
+    }
 
     RFID.flush();
 
@@ -223,7 +222,7 @@ void turnReaderOn () {
 
 void callback (char* topic, byte* payload, unsigned int length) {
 
-    if (String(topic) == presenceTopic) {
+    if (String(topic) == teaTopic) {
 
         char payloadChar[length+1];
 

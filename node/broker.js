@@ -5,7 +5,7 @@ var MongoClient = require("mongodb").MongoClient,
     topic = "presence",
     mqttServer,
     mqttClient,
-    io = require("socket.io").listen(8080, {log: false});
+    io = require("socket.io").listen(8080);
 
 var database,
     eventCollection,
@@ -82,7 +82,7 @@ MongoClient.connect("mongodb://localhost:27017/inhabit", function(error, db) {
 
             events = items;
 
-            // console.log("Events in events collection: ", events);
+            console.log("Events in events collection: ", events);
 
             // if users collection is empty, populate it
             if (reset === true) {
@@ -217,12 +217,14 @@ mqttServer = mqtt.createServer(function (client) {
     client.on("publish", function (packet) {
 
         // publish message to all clients
-        for (var k in self.clients) {
+        for (var i in self.clients) {
 
             // prevent messages from being sent to the originator
-            if (k !== client.id) {
+            if (i !== client.id) {
 
-                self.clients[k].publish({
+                console.log("Publishing to: ", self.clients[i].id, packet);
+
+                self.clients[i].publish({
 
                     topic: packet.topic,
 
@@ -294,6 +296,8 @@ mqttClient = mqtt.createClient(port, host, function (error, client) {
         if (packet.returnCode === 0) {
 
             // connected
+
+            client.subscribe("tea");
 
         } else {
 
@@ -367,7 +371,7 @@ mqttClient = mqtt.createClient(port, host, function (error, client) {
 
                                     updateState(function () {
 
-                                        if (user.presence === true) {
+                                        if (user.presence === true && user.id === "ben") {
 
                                             var asleep = [];
 
@@ -491,6 +495,55 @@ io.sockets.on("connection", function (socket) {
             console.log(error);
 
         }
+
+    });
+
+    socket.on("tea", function (data) {
+
+        var timestamp = (new Date).getTime();
+
+        // register the social event
+        eventCollection.insert({
+
+            type: "social",
+
+            user: usersObj.ben,
+
+            timestamp: timestamp
+
+        }, {safe: true}, function (error, result) {
+
+            if (error === null) {
+
+                console.log("Event logged: ", result);
+
+                io.sockets.emit("event", {
+
+                    type: "social",
+
+                    user: usersObj.ben,
+
+                    timestamp: timestamp
+
+                });
+
+                mqttClient.publish({
+
+                    topic: "tea",
+
+                    payload: "Put t'kettle on!"
+
+                });
+
+            } else {
+
+                console.log(error);
+
+            }
+
+        });
+
+        console.log(data.id + " wants to make a brew!");
 
     });
 
